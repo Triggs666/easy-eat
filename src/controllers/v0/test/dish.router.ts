@@ -3,6 +3,7 @@ import * as AWS  from 'aws-sdk'
 import { createLogger } from '../../../utils/logger'
 import { Dish } from '../../../businessLayer/dishes';
 import { CreateDishRequest } from '../../../requests/CreateDishRequest';
+import { UpdateDishRequest } from '../../../requests/UpdateDishRequest';
 
 
 const logger = createLogger('dish-router')
@@ -31,21 +32,9 @@ router.get('/', async (req: Request, res: Response) => {
     })
   }
   */
-  res.status(200).send('OK');
+  res.status(200).send(items);
 });
 
-// Get a feed resource
-/*
-router.get('/:id', async (req: Request, res: Response) => {
-  const {id} = req.params
-  logger.info('Deleting a TODO', id)
-
-  const rest = new Restaurant();
-  await rest.deleteRestaurantbyUserId(userId, id)
-
-  res.send({});
-});
-*/
 
 router.post('/', async (req: Request, res: Response) => {
   
@@ -68,18 +57,20 @@ router.post('/', async (req: Request, res: Response) => {
   else res.status(201).send(savedItem);
 });
 
-router.patch('/:id', async (req: Request, res: Response) => {
-  logger.info('Updating a RESTAURANT ...')
-  const {id} = req.params;
-  const name = req.body.name;
-  const email = req.body.email;
+router.patch('/:idDish', async (req: Request, res: Response) => {
+  logger.info('Updating a DISH ...')
+  const {idDish} = req.params;
+  const ingridients = req.body.ingridients;
+  const dishName = req.body.dishName;
+  const price = req.body.price;
 
-  var newItem: UpdateRestaurantRequest = {
-    name: name,
-    email: email
+  var newItem: UpdateDishRequest = {
+    dishName,
+    ingridients,
+    price
   }
 
-  logger.info('Updating a Restaurant', newItem)
+  logger.info('Updating a Dish', newItem)
 
   const rest = new Restaurant();
   const savedItem = await rest.updateRestaurantbyUserRestId(userId,id,newItem)

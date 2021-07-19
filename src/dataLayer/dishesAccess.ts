@@ -26,10 +26,11 @@ export class DishDBAccess{
 
       const result = await this.docClient.query({
           TableName: this.dishTable,
-          KeyConditionExpression: 'idRest = :idRest',
+          KeyConditionExpression: 'idRest = :idRest and userId = :userId',
+          IndexName: 'idRest-userId-index',
           ExpressionAttributeValues: {
-            //':userId': userId,
-            ':idRest': restId
+            ':idRest': restId,
+            ':userId': userId
           },
           ScanIndexForward: false
         }).promise()
@@ -68,17 +69,19 @@ export class DishDBAccess{
     return createdItem;
   }
 
-  async deleteRestaurant(item: DishItem) : Promise<boolean>{
+  async deleteDish(item: DishItem) : Promise<boolean>{
 
     var params = {
       TableName:this.dishTable,
+      IndexName: 'idRest-userId-index',
       Key:{
         userId: item.userId,
-        restId: item.restId
+        restId: item.idRest,
+        idDish: item.idDish
       },
       ReturnValues:"ALL_OLD"
     }
-    this.logger.info('deleteRestaurant', {params});
+    this.logger.info('deleteDish', {params});
 
     var deleteOK : boolean = false;
     await this.docClient.delete(params).promise()

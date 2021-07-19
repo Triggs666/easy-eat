@@ -55,15 +55,17 @@ export class Dish{
 
     async deleteRestaurantbyUserId(userId: string, restId: string): Promise<boolean> {
 
-        const deleteRest:DishItem = {
+        const deleteDish:DishItem = {
+            idRest,
+            idDish,
             userId,
-            restId,
-            name: '',
-            email: ''
+            dishName: string
+            ingridients: string
+            price: number
         }
 
         this.logger.info('deleteRestaurantbyUserId', {deleteRest});
-        return await this.dbAccess.deleteRestaurant(deleteRest);
+        return await this.dbAccess.deleteDish(deleteRest);
     }
 
 
