@@ -1,6 +1,6 @@
 export interface DishItem {
-  restId: string
-  dishId: string
+  idRest: string
+  idDish: string
   userId: string
   dishName: string
   ingridients: string
