@@ -3,6 +3,8 @@ import * as AWS  from 'aws-sdk'
 import { createLogger } from '../../../utils/logger'
 import { Restaurant } from '../../../businessLayer/restaurants';
 import { UpdateRestaurantRequest } from '../../../requests/UpdateRestaurantRequest';
+import { CreateRestaurantRequest } from '../../../requests/CreateRestaurantRequest';
+
 
 
 const logger = createLogger('rest-router')
@@ -33,6 +35,27 @@ router.get('/', async (req: Request, res: Response) => {
   res.send(items);
 });
 
+router.get('/', async (req: Request, res: Response) => {
+  logger.info('Getting all restaurants')
+  
+  const rest = new Restaurant();
+  const items = await rest.getRestaurantbyUserId(userId)
+/*
+  return {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      items
+    })
+  }
+  */
+  res.send(items);
+});
+
+
+
 // Get a feed resource
 /*
 router.get('/:id', async (req: Request, res: Response) => {
@@ -51,7 +74,7 @@ router.post('/', async (req: Request, res: Response) => {
   const name = req.body.name;
   const email = req.body.email;
 
-  const newRest = {
+  const newRest: CreateRestaurantRequest = {
     name,
     email
   }
