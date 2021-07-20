@@ -51,8 +51,8 @@ router.post('/', async (req: Request, res: Response) => {
   }
   logger.info('Creating a DISH', newDish)
   
-  const rest = new Dish();
-  const savedItem = await rest.createDishByRestaturant(userId, idRest, newDish)
+  const dish = new Dish();
+  const savedItem = await dish.createDishByRestaurant(userId, idRest, newDish)
   if (savedItem == undefined) res.status(400).send('Error creating new dish');
   else res.status(201).send(savedItem);
 });
@@ -72,7 +72,7 @@ router.patch('/:idDish', async (req: Request, res: Response) => {
 
   logger.info('Updating a Dish', newItem)
 
-  const rest = new Restaurant();
+  const rest = new Dish();
   const savedItem = await rest.updateRestaurantbyUserRestId(userId,id,newItem)
   if (savedItem == undefined){
     res.status(500).send('Error Updating');

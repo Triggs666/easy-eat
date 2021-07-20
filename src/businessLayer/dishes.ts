@@ -4,6 +4,7 @@ import * as uuid from 'uuid'
 import { DishItem } from '../models/DishItem';
 import { DishDBAccess } from '../dataLayer/dishesAccess';
 import { CreateDishRequest } from '../requests/CreateDishRequest';
+import { UpdateDishRequest } from '../requests/UpdateDishRequest';
 
 export class Dish{
     private readonly logger:Logger;
@@ -16,57 +17,68 @@ export class Dish{
 
     async getDishesByRestaturant(userId: string, restId: string):Promise<DishItem[]> {
 
-        this.logger.info('getDishesByRestaturant', {userId, restId})
-        return this.dbAccess.getDishListbyRestaurant(userId, restId);
+        const keyId = dishKey(userId, restId)
+        this.logger.info('getDishesByRestaturant', {dishKey: keyId})
+        return this.dbAccess.getDishListbyRestaurant(keyId);
     
     }
 
-    async createDishByRestaturant(userId: string, idRest: string, newItem:CreateDishRequest):Promise<DishItem> {
+    async createDishByRestaurant(userId: string, restId: string, newItem:CreateDishRequest):Promise<DishItem> {
 
-        const idDish = uuid.v4();
+        const dishId = uuid.v4();
+        const keyId = dishKey(userId, restId)
 
         const newRest:DishItem = {
-            idRest,
-            idDish,
-            userId,
+            keyId,
+            dishId,
+            restId,
             dishName: newItem.dishName,
             ingridients: newItem.ingridients,
             price: newItem.price
         }
 
-        this.logger.info('createDishByRestaturant', {userId, idRest, idDish, newItem});
+        this.logger.info('createDishByRestaturant', {newRest});
         return this.dbAccess.createDishbyRestaurant(newRest);
     
     }
 
-    updateRestaurantbyUserRestId(userId: string, restId:string, newItem:UpdateRestaurantRequest):Promise<DishItem> {
+    updateDishbyUserRestId(userId: string, restId:string, dishId:string ,newItem:UpdateDishRequest):Promise<DishItem> {
 
+        const keyId = dishKey(userId, restId)
         const newRest:DishItem = {
-            userId,
+            keyId,
+            dishId,
             restId,
-            name: newItem.name,
-            email: newItem.email
+            dishName: newItem.dishName,
+            ingridients: newItem.ingridients,
+            price: newItem.price
         }
 
-        this.logger.info('updateRestaurantbyUserId', {userId, newRest});
-        return this.dbAccess.updateRestaurant(newRest);
+        this.logger.info('updateDish', {newRest});
+        return this.dbAccess.updateDish(newRest);
     
     }
 
-    async deleteRestaurantbyUserId(userId: string, restId: string): Promise<boolean> {
+    async deleteDishbyUserId(userId: string, restId: string, dishId:string): Promise<boolean> {
 
+        const keyId = dishKey(userId, restId)
         const deleteDish:DishItem = {
-            idRest,
-            idDish,
-            userId,
-            dishName: string
-            ingridients: string
-            price: number
+            keyId,
+            dishId,
+            restId,
+            dishName: '',
+            price: 0
         }
 
-        this.logger.info('deleteRestaurantbyUserId', {deleteRest});
-        return await this.dbAccess.deleteDish(deleteRest);
+        this.logger.info('deleteDish', {deleteDish});
+        return await this.dbAccess.deleteDish(deleteDish);
     }
 
+
+}
+
+export function dishKey(userId: string, restId: string): string {
+
+    return userId+'|'+restId;
 
 }

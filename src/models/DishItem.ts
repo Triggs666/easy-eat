@@ -1,9 +1,9 @@
 export interface DishItem {
-  idRest: string
-  idDish: string
-  userId: string
+  keyId: string
+  dishId: string
+  restId: string
   dishName: string
-  ingridients: string
+  ingridients?: string
   price: number
   photoUrl?: string
 }

@@ -18,19 +18,17 @@ export class DishDBAccess{
       this.logger = createLogger('dataLayer::RestaurantAccess');
   }
 
-  async getDishListbyRestaurant(userId: string, restId: string):Promise<DishItem[]> {
+  async getDishListbyRestaurant(keyId:string):Promise<DishItem[]> {
 
-      this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, userId, restId})
+      this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, keyId})
   
       var items = {};
 
       const result = await this.docClient.query({
           TableName: this.dishTable,
-          KeyConditionExpression: 'idRest = :idRest and userId = :userId',
-          IndexName: 'idRest-userId-index',
+          KeyConditionExpression: 'keyId = :keyId',
           ExpressionAttributeValues: {
-            ':idRest': restId,
-            ':userId': userId
+            ':keyId': keyId
           },
           ScanIndexForward: false
         }).promise()
@@ -75,9 +73,8 @@ export class DishDBAccess{
       TableName:this.dishTable,
       IndexName: 'idRest-userId-index',
       Key:{
-        userId: item.userId,
-        restId: item.idRest,
-        idDish: item.idDish
+        keyId: item.keyId,
+        idDish: item.dishId
       },
       ReturnValues:"ALL_OLD"
     }
@@ -96,13 +93,13 @@ export class DishDBAccess{
     return deleteOK;
   }
 
-  async updateRestaurant(newItem: DishItem):Promise<DishItem> {
+  async updateDish(newItem: DishItem):Promise<DishItem> {
 
     const params = {
       TableName: this.dishTable,
       Key:{
-        userId: newItem.userId,
-        restId: newItem.restId
+        keyId: newItem.keyId,
+        idDish: newItem.dishId
       },
       UpdateExpression: "set email =:email, #N=:name",
       ExpressionAttributeValues:{
