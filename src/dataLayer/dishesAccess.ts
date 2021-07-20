@@ -50,18 +50,17 @@ export class DishDBAccess{
 
     const params = {
       TableName: this.dishTable,
-      Item: newItem,
-      ReturnValues:"ALL_OLD"
+      Item: newItem
     }
 
     var createdItem: DishItem = undefined;
     await this.docClient.put(params).promise()
     .then((data) => {
       this.logger.info("Create process finished OK", {data})
-      createdItem = data as unknown as DishItem;
+      createdItem = newItem;
     })
     .catch((err) => {
-      this.logger.error("Create process ERROR:",err)
+      this.logger.error("Create process ERROR:",err);
     });
 
     return createdItem;
@@ -71,10 +70,9 @@ export class DishDBAccess{
 
     var params = {
       TableName:this.dishTable,
-      IndexName: 'idRest-userId-index',
       Key:{
         keyId: item.keyId,
-        idDish: item.dishId
+        dishId: item.dishId
       },
       ReturnValues:"ALL_OLD"
     }
@@ -99,20 +97,19 @@ export class DishDBAccess{
       TableName: this.dishTable,
       Key:{
         keyId: newItem.keyId,
-        idDish: newItem.dishId
+        dishId: newItem.dishId
       },
-      UpdateExpression: "set email =:email, #N=:name",
+      UpdateExpression: "set dishName = :dishName, ingridients = :ingridients, price = :price",
+      ConditionExpression: 'attribute_exists(dishId)',
       ExpressionAttributeValues:{
-          //":email":newItem.email,
-          //":name":newItem.name,
-      },
-      ExpressionAttributeNames:{
-        "#N": "name"
+          ":dishName":newItem.dishName,
+          ":ingridients":newItem.ingridients,
+          ":price":newItem.price
       },
       ReturnValues:"UPDATED_NEW"
     }
     
-    this.logger.info('updateRestaurant', {params})
+    this.logger.info('updateDish', {params})
 
     var updatedItem: DishItem = undefined;
     await this.docClient.update(params).promise()

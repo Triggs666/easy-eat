@@ -50,15 +50,14 @@ export class RestaurantDBAccess{
 
     const params = {
       TableName: this.restaurantTable,
-      Item: newItem,
-      ReturnValues:"ALL_OLD"
+      Item: newItem
     }
 
     var createdItem: RestaurantItem = undefined;
     await this.docClient.put(params).promise()
     .then((data) => {
       this.logger.info("Create process finished OK", {data})
-      createdItem = data as unknown as RestaurantItem;
+      createdItem = newItem;
     })
     .catch((err) => {
       this.logger.error("Create process ERROR:",err)
