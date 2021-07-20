@@ -36,7 +36,7 @@ export class RestaurantDBAccess{
           this.logger.info("get process finished OK", {data})
           items = data.Items;
         })
-        .catch((err) => {
+        .catch((err: AWSError) => {
           this.logger.error("Create process ERROR:",err)
         });
 
@@ -59,7 +59,7 @@ export class RestaurantDBAccess{
       this.logger.info("Create process finished OK", {data})
       createdItem = newItem;
     })
-    .catch((err) => {
+    .catch((err: AWSError) => {
       this.logger.error("Create process ERROR:",err)
     });
 
@@ -118,8 +118,12 @@ export class RestaurantDBAccess{
       this.logger.info("Update process finished OK", {data})
       updatedItem = data.Attributes as unknown as RestaurantItem;
     })
-    .catch((err) => {
-      this.logger.error("Update process ERROR:",err)
+    .catch((err: AWSError) => {
+      if (err.code === "ConditionalCheckFailedException"){
+        this.logger.error("Restaurant not found to update:",{restId:newItem.restId});
+        updatedItem = {} as RestaurantItem;
+      }
+      else this.logger.error("Update process ERROR:",err)
     });
 
     return updatedItem;

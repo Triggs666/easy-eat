@@ -36,7 +36,7 @@ export class DishDBAccess{
           this.logger.info("get process finished OK", {data})
           items = data.Items;
         })
-        .catch((err) => {
+        .catch((err: AWSError) => {
           this.logger.error("Create process ERROR:",err)
         });
 
@@ -59,7 +59,7 @@ export class DishDBAccess{
       this.logger.info("Create process finished OK", {data})
       createdItem = newItem;
     })
-    .catch((err) => {
+    .catch((err: AWSError) => {
       this.logger.error("Create process ERROR:",err);
     });
 
@@ -117,8 +117,12 @@ export class DishDBAccess{
       this.logger.info("Update process finished OK", {data})
       updatedItem = data.Attributes as unknown as DishItem;
     })
-    .catch((err) => {
-      this.logger.error("Update process ERROR:",err)
+    .catch((err: AWSError) => {
+      if (err.code === "ConditionalCheckFailedException"){
+        this.logger.error("Dish not found to update:",{dishID:newItem.dishId});
+        updatedItem = {} as DishItem;
+      }
+      else this.logger.error("Update process ERROR:",err)
     });
 
     return updatedItem;
