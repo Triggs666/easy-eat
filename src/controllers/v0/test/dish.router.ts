@@ -103,5 +103,21 @@ router.delete('/:idDish', async (req: Request, res: Response) => {
   }
 });
 
+router.put('/:idDish', async (req: Request, res: Response) => {
+  
+  const {idDish} = req.params;
+  const {idRest} = req.params;
+
+  logger.info('Add the dish to the user cart', idDish)
+
+  const dish = new Dish();
+  const deletedItem = await dish.putDishinUserCart(userId,idRest,idDish);
+  if (!deletedItem){
+    res.status(500).send('Error deleting restaurant');
+  } else {
+    res.status(204).send({});
+  }
+});
+
 
 export const DishRouter: Router = router;
