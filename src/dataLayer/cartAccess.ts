@@ -5,30 +5,30 @@ import { createLogger } from '../utils/logger'
 
 import { Logger } from 'winston';
 import { AWSError } from 'aws-sdk';
-import { DishItem } from '../models/DishItem';
+import { CartItem } from '../models/CartItem';
 
-export class DishDBAccess{
+export class CartDBAccess{
     
   private readonly docClient:DocumentClient;
   private readonly logger:Logger;
-  private readonly dishTable = process.env.DISH_TABLE;
+  private readonly cartTable = process.env.CART_TABLE;
 
   constructor(){
       this.docClient = new AWS.DynamoDB.DocumentClient();
-      this.logger = createLogger('dataLayer::RestaurantAccess');
+      this.logger = createLogger('dataLayer::CartAccess');
   }
 
-  async getDishListbyRestaurant(keyId:string):Promise<DishItem[]> {
+  async getCartItemsByUser(userId:string):Promise<CartItem[]> {
 
-      this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, keyId})
+      this.logger.info('getCartItemsByUser', {tableName: this.cartTable, userId})
   
       var items = {};
 
       const result = await this.docClient.query({
-          TableName: this.dishTable,
-          KeyConditionExpression: 'keyId = :keyId',
+          TableName: this.cartTable,
+          KeyConditionExpression: 'userId = :userId',
           ExpressionAttributeValues: {
-            ':keyId': keyId
+            ':userId': userId
           },
           ScanIndexForward: false
         }).promise()
@@ -40,46 +40,20 @@ export class DishDBAccess{
           this.logger.error("Create process ERROR:",err)
         });
 
-      return items as DishItem[];
+      return items as CartItem[];
   
   }
 
-  async getDishesById(dishId:string):Promise<DishItem[]> {
+  async createCartItemsByUser(newItem: CartItem):Promise<CartItem> {
 
-    this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, keyId})
-
-    var items = {};
-
-    const result = await this.docClient.query({
-        TableName: this.dishTable,
-        KeyConditionExpression: 'keyId = :keyId',
-        ExpressionAttributeValues: {
-          ':keyId': keyId
-        },
-        ScanIndexForward: false
-      }).promise()
-      .then((data) => {
-        this.logger.info("get process finished OK", {data})
-        items = data.Items;
-      })
-      .catch((err: AWSError) => {
-        this.logger.error("Create process ERROR:",err)
-      });
-
-    return items as DishItem[];
-
-}
-
-  async createDishbyRestaurant(newItem: DishItem):Promise<DishItem> {
-
-    this.logger.info('createDishbyRestaurant', {newDish: newItem})
+    this.logger.info('createCartItemsByUser', newItem)
 
     const params = {
-      TableName: this.dishTable,
+      TableName: this.cartTable,
       Item: newItem
     }
 
-    var createdItem: DishItem = undefined;
+    var createdItem: CartItem = undefined;
     await this.docClient.put(params).promise()
     .then((data) => {
       this.logger.info("Create process finished OK", {data})
@@ -91,11 +65,11 @@ export class DishDBAccess{
 
     return createdItem;
   }
-
-  async deleteDish(item: DishItem) : Promise<boolean>{
+/*
+  async deleteCartItem(item: CartItem) : Promise<boolean>{
 
     var params = {
-      TableName:this.dishTable,
+      TableName:this.cartTable,
       Key:{
         keyId: item.keyId,
         dishId: item.dishId
@@ -117,10 +91,10 @@ export class DishDBAccess{
     return deleteOK;
   }
 
-  async updateDish(newItem: DishItem):Promise<DishItem> {
+  async updateCartItem(newItem: CartItem):Promise<CartItem> {
 
     const params = {
-      TableName: this.dishTable,
+      TableName: this.cartTable,
       Key:{
         keyId: newItem.keyId,
         dishId: newItem.dishId
@@ -137,16 +111,16 @@ export class DishDBAccess{
     
     this.logger.info('updateDish', {params})
 
-    var updatedItem: DishItem = undefined;
+    var updatedItem: CartItem = undefined;
     await this.docClient.update(params).promise()
     .then((data) => {
       this.logger.info("Update process finished OK", {data})
-      updatedItem = data.Attributes as unknown as DishItem;
+      updatedItem = data.Attributes as unknown as CartItem;
     })
     .catch((err: AWSError) => {
       if (err.code === "ConditionalCheckFailedException"){
         this.logger.error("Dish not found to update:",{dishID:newItem.dishId});
-        updatedItem = {} as DishItem;
+        updatedItem = {} as CartItem;
       }
       else this.logger.error("Update process ERROR:",err)
     });
@@ -154,5 +128,5 @@ export class DishDBAccess{
     return updatedItem;
     
   }
-
+*/
 }

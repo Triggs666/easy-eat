@@ -107,11 +107,18 @@ router.put('/:idDish', async (req: Request, res: Response) => {
   
   const {idDish} = req.params;
   const {idRest} = req.params;
+  const {people} = req.params;
 
-  logger.info('Add the dish to the user cart', idDish)
+  if (!people) {
+    res.status(300).send('Number of people is mandatory');
+  }
+
+  const nPeople = Number(people);
+
+  logger.info('Add the dish to the user cart', {idRest, idDish, people})
 
   const dish = new Dish();
-  const deletedItem = await dish.putDishinUserCart(userId,idRest,idDish);
+  const deletedItem = await dish.putDishInUserCart(userId,idRest,idDish,people);
   if (!deletedItem){
     res.status(500).send('Error deleting restaurant');
   } else {
