@@ -46,15 +46,15 @@ export class DishDBAccess{
 
   async getDishesById(dishId:string):Promise<DishItem[]> {
 
-    this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, keyId})
+    this.logger.info('getDishesById', {tableName: this.dishTable, dishId})
 
-    var items = {};
+    var items = undefined;
 
     const result = await this.docClient.query({
         TableName: this.dishTable,
-        KeyConditionExpression: 'keyId = :keyId',
+        KeyConditionExpression: 'dishId = :dishId',
         ExpressionAttributeValues: {
-          ':keyId': keyId
+          ':dishId': dishId
         },
         ScanIndexForward: false
       }).promise()
