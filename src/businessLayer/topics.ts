@@ -19,15 +19,18 @@ export class Topics{
     }
 
     async notifyOrder(topicARN: string, item: CartItem): Promise<string> {
-        return undefined;
+        this.logger.info('notifyOrder', {topicARN, item});
+        return this.notifier.notifyOrder(topicARN, item);
     }
 
     async subscribeMailTopic(topicARN: string, email: string): Promise<string> {
-        return undefined;
+        this.logger.info('subscribeMailTopic', {topicARN, email});
+        return this.notifier.subscribeMailTopic(topicARN, email);
     }
 
     async deleteTopic(topicARN: string): Promise<boolean> {
-        return undefined;
+        this.logger.info('deleteTopic', {topicARN});
+        return this.notifier.deleteTopic(topicARN);
     }
 
 }
