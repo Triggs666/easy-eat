@@ -92,14 +92,14 @@ export class Dish{
         return await this.dbAccess.deleteDish(deleteDish);
     }
 
-    async putDishInUserCart(userId: string, restId: string, dishId: string, people: number): Promise<CartItem> {
+    async putDishInUserCart(userId: string, restId: string, dishId: string, amount: number): Promise<CartItem> {
         
         const dishItem:DishItem = await this.getDishById(dishId);
         
         if (dishItem == undefined) return undefined;
 
         const cart:Cart = new Cart();
-        return await cart.createDishInUserCart (userId, restId, dishId, people, dishItem.dishName, people*dishItem.price)
+        return await cart.createItemInUserCart (userId, restId, dishId, amount, dishItem.dishName, amount*dishItem.price)
     }
 
 

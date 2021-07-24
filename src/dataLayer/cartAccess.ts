@@ -20,25 +20,25 @@ export class CartDBAccess{
 
   async getCartItemsByUser(userId:string):Promise<CartItem[]> {
 
-      this.logger.info('getCartItemsByUser', {tableName: this.cartTable, userId})
+      this.logger.info('GetCartItemsByUser', {tableName: this.cartTable, userId})
   
       var items = {};
 
       const result = await this.docClient.query({
-          TableName: this.cartTable,
-          KeyConditionExpression: 'userId = :userId',
-          ExpressionAttributeValues: {
-            ':userId': userId
-          },
-          ScanIndexForward: false
-        }).promise()
-        .then((data) => {
-          this.logger.info("get process finished OK", {data})
-          items = data.Items;
-        })
-        .catch((err: AWSError) => {
-          this.logger.error("Create process ERROR:",err)
-        });
+        TableName: this.cartTable,
+        KeyConditionExpression: 'userId = :userId',
+        ExpressionAttributeValues: {
+          ':userId': userId
+        },
+        ScanIndexForward: false
+      }).promise()
+      .then((data) => {
+        this.logger.info("Get process finished OK", {data})
+        items = data.Items;
+      })
+      .catch((err: AWSError) => {
+        this.logger.error("Get process ERROR:",err)
+      });
 
       return items as CartItem[];
   
@@ -65,14 +65,13 @@ export class CartDBAccess{
 
     return createdItem;
   }
-/*
+
   async deleteCartItem(item: CartItem) : Promise<boolean>{
 
     var params = {
       TableName:this.cartTable,
       Key:{
-        keyId: item.keyId,
-        dishId: item.dishId
+        keyId: item.itemId
       },
       ReturnValues:"ALL_OLD"
     }
@@ -91,6 +90,7 @@ export class CartDBAccess{
     return deleteOK;
   }
 
+  /*
   async updateCartItem(newItem: CartItem):Promise<CartItem> {
 
     const params = {

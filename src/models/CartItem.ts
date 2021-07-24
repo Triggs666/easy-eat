@@ -4,7 +4,7 @@ export interface CartItem {
     restId: string
     dishId: string
     dishName: string
-    people: number
+    amount: number
     price: number
   }
   
