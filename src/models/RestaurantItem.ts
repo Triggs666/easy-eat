@@ -2,6 +2,6 @@ export interface RestaurantItem {
   userId: string
   restId: string
   name: string
-  email: string
+  topicARN: string
   logoUrl?: string
 }

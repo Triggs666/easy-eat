@@ -44,6 +44,33 @@ export class RestaurantDBAccess{
   
   }
 
+  async getRestListbyRestId(userId: string, restId: string):Promise<RestaurantItem[]> {
+
+    this.logger.info('getRestListbyUserId', {tableNAme: this.restaurantTable, userId})
+
+    var items = {};
+
+    const result = await this.docClient.query({
+        TableName: this.restaurantTable,
+        KeyConditionExpression: 'userId = :userId and restId = :restId',
+        ExpressionAttributeValues: {
+          ':userId': userId,
+          ':restId': restId
+        },
+        ScanIndexForward: false
+      }).promise()
+      .then((data) => {
+        this.logger.info("Get process finished OK", {data})
+        items = data.Items;
+      })
+      .catch((err: AWSError) => {
+        this.logger.error("Get process ERROR:",err)
+      });
+
+    return items as RestaurantItem[];
+
+}
+
   async createRestaurant(newItem: RestaurantItem):Promise<RestaurantItem> {
 
     this.logger.info('createRestaurant', {newRestaurant: newItem})
@@ -99,9 +126,8 @@ export class RestaurantDBAccess{
         userId: newItem.userId,
         restId: newItem.restId
       },
-      UpdateExpression: "set email =:email, #N=:name",
+      UpdateExpression: "set #N=:name",
       ExpressionAttributeValues:{
-          ":email":newItem.email,
           ":name":newItem.name,
       },
       ExpressionAttributeNames:{

@@ -3,5 +3,4 @@
  */
 export interface UpdateRestaurantRequest {
   name: string
-  email: string
 }

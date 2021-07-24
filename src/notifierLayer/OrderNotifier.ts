@@ -83,4 +83,21 @@ export class OrderSNSNotifier{
 
     }
 
+    async deleteTopic(topicARN: string): Promise<boolean> {
+
+        this.logger.info("Deleting topic " + {topicARN});
+
+        await this.snsClient.deleteTopic({TopicArn: topicARN}).promise()
+        .then((data) => {
+            this.logger.info("Topic deleted " + topicARN);
+            return true;
+        })
+        .catch((err: AWSError) => {
+            this.logger.error("Create topic process ERROR:", err);
+        });
+
+        return false;
+
+    }
+
 }
