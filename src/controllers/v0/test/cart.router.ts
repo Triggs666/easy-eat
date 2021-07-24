@@ -73,7 +73,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
 
-  logger.info('Process teh order');
+  logger.info('Process the order');
 
   const cart = new Cart();
   const cartProcessed = await cart.processCartOrder(userId)

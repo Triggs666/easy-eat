@@ -26,7 +26,6 @@ import { createLogger } from './utils/logger';
   }));
 
   const logger = createLogger('auth')
-  logger.info('Wellcome! <'+'mongo'+'>')
 
   app.use('/api/v0/', IndexRouter);
 

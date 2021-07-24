@@ -90,6 +90,7 @@ export class Restaurant{
         this.logger.info('delete subscriptions', {deleteRest});
         
         const topic: Topics = new Topics();
+        await topic.unsubscribeTopic(deleteRest.topicARN);
         const topicARN = await topic.deleteTopic(deleteRest.topicARN);
 
         this.logger.info('deleteRestaurantbyUserId', {deleteRest});

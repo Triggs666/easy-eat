@@ -19,13 +19,13 @@ export class OrderSNSNotifier{
 
     async createTopic(topicId: string): Promise<string> {
         
-        this.logger.info("Creating topic " + {topicId});
+        this.logger.info("Creating topic ", {topicId});
         var topicARN = undefined;
 
         await this.snsClient.createTopic({Name: topicId}).promise()
         .then((data) => {
             topicARN = data.TopicArn;
-            this.logger.info("Topic created " + topicARN);
+            this.logger.info("Topic created ",topicARN);
         })
         .catch((err: AWSError) => {
             this.logger.error("Create topic process ERROR:", err);
@@ -37,7 +37,7 @@ export class OrderSNSNotifier{
 
     async subscribeMailTopic(topicARN: string, email: string): Promise<string> {
         
-        this.logger.info("subscribing topic " + {topicARN, email});
+        this.logger.info("subscribing topic ", {topicARN, email});
         var subscriptionArn = undefined;
 
         var params = {
@@ -49,7 +49,7 @@ export class OrderSNSNotifier{
         await this.snsClient.subscribe(params).promise()
         .then((data) => {
             subscriptionArn = data.SubscriptionArn;
-            this.logger.info("subscription created " + subscriptionArn);
+            this.logger.info("subscription created ",subscriptionArn);
         })
         .catch((err: AWSError) => {
             this.logger.error("Create subscription process ERROR:", err);
@@ -59,21 +59,55 @@ export class OrderSNSNotifier{
 
     }
 
+    async unsubscribeTopic(topicARN:string): Promise<boolean> {
+        
+        this.logger.info("unsubscribing topic ", {topicARN});
+        var subscriptionArn = undefined;
+
+        const params = {
+            TopicArn : topicARN
+        }
+
+        var list:SNS.SubscriptionsList = undefined;
+        await this.snsClient.listSubscriptionsByTopic(params).promise()
+        .then((data) => {
+            list = data.Subscriptions;
+            this.logger.info("subscription list ",list);
+        })
+        .catch((err: AWSError) => {
+            this.logger.error("subscription list process ERROR:", err);
+        });
+
+        for (var i=0; i<list.length && list!=undefined; i++){
+            const subsARN = list[0].SubscriptionArn;
+            await this.snsClient.unsubscribe({SubscriptionArn : subsARN}).promise()
+            .then((data) => {
+                this.logger.info("unsubscription OK ",subsARN);
+            })
+            .catch((err: AWSError) => {
+                this.logger.error("unsubscription process ERROR:", err);
+            });
+        }
+
+        return subscriptionArn;
+
+    }
+
 
     async notifyOrder(topicARN: string, item: CartItem): Promise<string> {
         
-        this.logger.info("Notifying " + {topicARN, item});
+        this.logger.info("Notifying ", {topicARN, item});
         var messageId = undefined;
 
         var params = {
-            Message: 'MESSAGE_TEXT',
+            Message: item.dishName+' '+item.amount+' '+item.price+' $',
             TopicArn: topicARN
         };
         
         await this.snsClient.publish(params).promise()
         .then((data) => {
             messageId =  data.MessageId;
-            this.logger.info("MessageID is " + messageId);
+            this.logger.info("MessageID is:",messageId);
         })
         .catch((err: AWSError) => {
             this.logger.error("ERROR sending notification:", err);
@@ -85,11 +119,11 @@ export class OrderSNSNotifier{
 
     async deleteTopic(topicARN: string): Promise<boolean> {
 
-        this.logger.info("Deleting topic " + {topicARN});
+        this.logger.info("Deleting topic ",{topicARN});
 
         await this.snsClient.deleteTopic({TopicArn: topicARN}).promise()
         .then((data) => {
-            this.logger.info("Topic deleted " + topicARN);
+            this.logger.info("Topic deleted ",topicARN);
             return true;
         })
         .catch((err: AWSError) => {

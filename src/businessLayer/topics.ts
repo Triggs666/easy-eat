@@ -28,6 +28,11 @@ export class Topics{
         return this.notifier.subscribeMailTopic(topicARN, email);
     }
 
+    async unsubscribeTopic(topicARN: string): Promise<boolean> {
+        this.logger.info('subscribeMailTopic', {topicARN});
+        return this.notifier.unsubscribeTopic(topicARN);
+    }
+
     async deleteTopic(topicARN: string): Promise<boolean> {
         this.logger.info('deleteTopic', {topicARN});
         return this.notifier.deleteTopic(topicARN);
