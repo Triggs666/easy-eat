@@ -6,6 +6,7 @@ import { CartItem } from "../models/CartItem";
 import { UpdateCartItemRequest } from "../requests/UpdateCartItemRequest";
 import { Dish } from "./dishes";
 import { DishItem } from "../models/DishItem";
+import { Topics } from "./topics";
 
 export class Cart{
 
@@ -79,8 +80,23 @@ export class Cart{
 
     async processCartOrder(userId: string): Promise<boolean> {
 
-        this.logger.info('get all items in cart for user', {userId})
+        this.logger.info('Process user order', {userId})
+
+        const topic:Topics = new Topics();
         const items:CartItem[] = await this.dbAccess.getCartItemsByUser(userId);
+
+    
+        for (var i=0; i<items.length; i++){
+            const item:CartItem = items[i];
+            this.logger.info('Notify item order', {item});
+
+            const topicARN = await topic.getTopicARNByRestId(item.restId);
+            const result = topic.notifyOrder(topicARN, item);
+
+        }
+
+        this.logger.info('Notify', {userId})
+
 
         
 
