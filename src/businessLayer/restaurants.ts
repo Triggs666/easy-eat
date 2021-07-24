@@ -91,7 +91,7 @@ export class Restaurant{
         
         const topic: Topics = new Topics();
         await topic.unsubscribeTopic(deleteRest.topicARN);
-        const topicARN = await topic.deleteTopic(deleteRest.topicARN);
+        await topic.deleteTopic(deleteRest.topicARN);
 
         this.logger.info('deleteRestaurantbyUserId', {deleteRest});
         return await this.dbAccess.deleteRestaurant(deleteRest);
