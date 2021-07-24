@@ -23,6 +23,13 @@ export class Restaurant{
     
     }
 
+    async getRestListbyRestId(userId: string, restId: string):Promise<RestaurantItem[]> {
+
+        this.logger.info('getRestListbyRestId', {userId, restId})
+        return this.dbAccess.getRestListbyRestId(userId, restId);
+    
+    }
+
     async createRestaurantbyUserId(userId: string, newItem:CreateRestaurantRequest):Promise<RestaurantItem> {
 
         this.logger.info('createRestaurantbyUserId', {userId, newItem});

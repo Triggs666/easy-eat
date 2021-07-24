@@ -7,6 +7,8 @@ import { UpdateCartItemRequest } from "../requests/UpdateCartItemRequest";
 import { Dish } from "./dishes";
 import { DishItem } from "../models/DishItem";
 import { Topics } from "./topics";
+import { Restaurant } from "./restaurants";
+import { RestaurantItem } from "../models/RestaurantItem";
 
 export class Cart{
 
@@ -85,20 +87,34 @@ export class Cart{
         const topic:Topics = new Topics();
         const items:CartItem[] = await this.dbAccess.getCartItemsByUser(userId);
 
-    
-        for (var i=0; i<items.length; i++){
+        var error = false;
+        for (var i=0; i<items.length && !error; i++){
+
             const item:CartItem = items[i];
             this.logger.info('Notify item order', {item});
 
-            const topicARN = await topic.getTopicARNByRestId(item.restId);
-            const result = topic.notifyOrder(topicARN, item);
+            const restaurant: Restaurant = new Restaurant();
+            const restItems:RestaurantItem[] = await restaurant.getRestListbyRestId(userId, item.restId);
+            if (restItems==undefined || restItems.length==0){
+                return false;
+            }
+            const topicARN = restItems[0].topicARN;
+            this.logger.info('Notify item order to topic ', {topicARN, item});
+            error = (await topic.notifyOrder(topicARN, item) == undefined);
 
         }
-
-        this.logger.info('Notify', {userId})
-
-
         
+        if (error) return false;
+
+        for (var i=0; i<items.length && !error; i++){
+
+            const item:CartItem = items[i]; 
+            this.logger.info('Delete item order', {item});
+            error = !(await this.dbAccess.deleteCartItem(item));
+            
+        }
+
+        return !error;
 
     }
 
