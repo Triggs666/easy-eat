@@ -71,5 +71,18 @@ router.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/', async (req: Request, res: Response) => {
+
+  logger.info('Process teh order');
+
+  const cart = new Cart();
+  const cartProcessed = await cart.processCartOrder(userId)
+  if (!cartProcessed){
+    res.status(500).send('Error processing cart');
+  } else {
+    res.status(200).send('The order has been processed');
+  }
+});
+
 
 export const CartRouter: Router = router;
