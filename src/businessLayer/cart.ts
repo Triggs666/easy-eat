@@ -77,4 +77,13 @@ export class Cart{
         return await this.dbAccess.deleteCartItem(deleteItem);
     }
 
+    async processCartOrder(userId: string): Promise<boolean> {
+
+        this.logger.info('get all items in cart for user', {userId})
+        const items:CartItem[] = await this.dbAccess.getCartItemsByUser(userId);
+
+        
+
+    }
+
 }
