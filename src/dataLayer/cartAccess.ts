@@ -44,6 +44,33 @@ export class CartDBAccess{
   
   }
 
+  async getCartItemsById(itemId:string):Promise<CartItem[]> {
+
+    this.logger.info('GetCartItemsById', {tableName: this.cartTable, itemId})
+
+    var items = {};
+
+    const result = await this.docClient.query({
+      TableName: this.cartTable,
+      KeyConditionExpression: 'itemId = :itemId',
+      ExpressionAttributeValues: {
+        ':itemId': itemId
+      },
+      ScanIndexForward: false
+    }).promise()
+    .then((data) => {
+      this.logger.info("Get process finished OK", {data})
+      items = data.Items;
+    })
+    .catch((err: AWSError) => {
+      this.logger.error("Get process ERROR:",err)
+    });
+
+    return items as CartItem[];
+
+}
+
+
   async createCartItemsByUser(newItem: CartItem):Promise<CartItem> {
 
     this.logger.info('createCartItemsByUser', newItem)
@@ -75,7 +102,7 @@ export class CartDBAccess{
       },
       ReturnValues:"ALL_OLD"
     }
-    this.logger.info('deleteDish', {params});
+    this.logger.info('deleteCartITem', {params});
 
     var deleteOK : boolean = false;
     await this.docClient.delete(params).promise()
@@ -90,26 +117,24 @@ export class CartDBAccess{
     return deleteOK;
   }
 
-  /*
+  
   async updateCartItem(newItem: CartItem):Promise<CartItem> {
 
     const params = {
       TableName: this.cartTable,
       Key:{
-        keyId: newItem.keyId,
-        dishId: newItem.dishId
+        keyId: newItem.itemId
       },
-      UpdateExpression: "set dishName = :dishName, ingridients = :ingridients, price = :price",
-      ConditionExpression: 'attribute_exists(dishId)',
+      UpdateExpression: "set amount= :amount, price = :price",
+      ConditionExpression: 'attribute_exists(itemId)',
       ExpressionAttributeValues:{
-          ":dishName":newItem.dishName,
-          ":ingridients":newItem.ingridients,
+          ":amount":newItem.amount,
           ":price":newItem.price
       },
       ReturnValues:"UPDATED_NEW"
     }
     
-    this.logger.info('updateDish', {params})
+    this.logger.info('updateCartItem', {params})
 
     var updatedItem: CartItem = undefined;
     await this.docClient.update(params).promise()
@@ -128,5 +153,5 @@ export class CartDBAccess{
     return updatedItem;
     
   }
-*/
+
 }

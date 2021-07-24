@@ -43,7 +43,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
   logger.info('Updating a Item', newItem)
 
   const cart = new Cart();
-  const savedItem = await cart.updateCartItem(id,newItem)
+  const savedItem = await cart.updateItemInUserCart(id,newItem)
   if (savedItem == undefined){
     res.status(500).send('Error Updating');
   } else {
@@ -60,10 +60,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
   
   const {id} = req.params;
 
-  logger.info('Deleting the restaurant', id)
+  logger.info('Deleting the cartItem', id)
 
-  const rest = new Restaurant();
-  const deletedItem = await rest.deleteRestaurantbyUserId(userId,id)
+  const cart = new Cart();
+  const deletedItem = await cart.deleteItemInUserCart(id)
   if (!deletedItem){
     res.status(500).send('Error deleting restaurant');
   } else {
@@ -72,4 +72,4 @@ router.delete('/:id', async (req: Request, res: Response) => {
 });
 
 
-export const RestaurantRouter: Router = router;
+export const CartRouter: Router = router;

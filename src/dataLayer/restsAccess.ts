@@ -33,11 +33,11 @@ export class RestaurantDBAccess{
           ScanIndexForward: false
         }).promise()
         .then((data) => {
-          this.logger.info("get process finished OK", {data})
+          this.logger.info("Get process finished OK", {data})
           items = data.Items;
         })
         .catch((err: AWSError) => {
-          this.logger.error("Create process ERROR:",err)
+          this.logger.error("Get process ERROR:",err)
         });
 
       return items as RestaurantItem[];
