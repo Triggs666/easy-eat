@@ -52,6 +52,7 @@ export class DishDBAccess{
 
     const result = await this.docClient.query({
         TableName: this.dishTable,
+        IndexName: 'dishId-index',
         KeyConditionExpression: 'dishId = :dishId',
         ExpressionAttributeValues: {
           ':dishId': dishId

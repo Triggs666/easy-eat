@@ -34,9 +34,10 @@ export class Cart{
         return await this.dbAccess.createCartItemsByUser(newItem);
     }
 
-    async updateItemInUserCart(itemId: string, itemData: UpdateCartItemRequest): Promise<CartItem> {
+    async updateItemInUserCart(userId:string, itemId: string, itemData: UpdateCartItemRequest): Promise<CartItem> {
         
-        const cartItems:CartItem[] = await this.dbAccess.getCartItemsById(itemId);
+        this.logger.info('Getting carItem full info', {userId, itemId});
+        const cartItems:CartItem[] = await this.dbAccess.getCartItemsById(userId, itemId);
         if (cartItems == undefined || cartItems.length==0){
             return undefined;
         }
@@ -60,10 +61,10 @@ export class Cart{
 
     }
 
-    async deleteItemInUserCart(itemId: string): Promise<boolean> {
+    async deleteItemInUserCart(userId: string, itemId: string): Promise<boolean> {
         
         const deleteItem:CartItem = {
-            userId: '',
+            userId,
             itemId,
             restId: '',
             dishId: '',

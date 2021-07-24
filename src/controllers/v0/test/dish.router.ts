@@ -107,10 +107,10 @@ router.put('/:idDish', async (req: Request, res: Response) => {
   
   const {idDish} = req.params;
   const {idRest} = req.params;
-  const {amount} = req.params;
-
+  const {amount} = req.query;
+  logger.info('test',req);
   if (!amount) {
-    res.status(300).send('Number of people is mandatory');
+    res.status(300).send('amount value is mandatory');
   }
 
   const nAmount = Number(amount);

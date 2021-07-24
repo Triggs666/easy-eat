@@ -35,15 +35,15 @@ router.get('/', async (req: Request, res: Response) => {
 router.patch('/:id', async (req: Request, res: Response) => {
   logger.info('Updating a Item ...')
   const {id} = req.params;
-  const {amount} = req.params;
+  const {amount} = req.query;
 
   const nAmount = Number(amount);
   var newItem: UpdateCartItemRequest = {amount: nAmount};
 
-  logger.info('Updating a Item', newItem)
+  logger.info('Updating a Item', {newItem});
 
   const cart = new Cart();
-  const savedItem = await cart.updateItemInUserCart(id,newItem)
+  const savedItem = await cart.updateItemInUserCart(userId, id, newItem)
   if (savedItem == undefined){
     res.status(500).send('Error Updating');
   } else {
@@ -63,7 +63,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   logger.info('Deleting the cartItem', id)
 
   const cart = new Cart();
-  const deletedItem = await cart.deleteItemInUserCart(id)
+  const deletedItem = await cart.deleteItemInUserCart(userId, id)
   if (!deletedItem){
     res.status(500).send('Error deleting restaurant');
   } else {

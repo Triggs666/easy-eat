@@ -44,7 +44,7 @@ export class CartDBAccess{
   
   }
 
-  async getCartItemsById(itemId:string):Promise<CartItem[]> {
+  async getCartItemsById(userId:string, itemId:string):Promise<CartItem[]> {
 
     this.logger.info('GetCartItemsById', {tableName: this.cartTable, itemId})
 
@@ -52,9 +52,10 @@ export class CartDBAccess{
 
     const result = await this.docClient.query({
       TableName: this.cartTable,
-      KeyConditionExpression: 'itemId = :itemId',
+      KeyConditionExpression: 'itemId = :itemId and userId = :userId',
       ExpressionAttributeValues: {
-        ':itemId': itemId
+        ':itemId': itemId,
+        ':userId': userId,
       },
       ScanIndexForward: false
     }).promise()
@@ -98,7 +99,8 @@ export class CartDBAccess{
     var params = {
       TableName:this.cartTable,
       Key:{
-        keyId: item.itemId
+        userId: item.userId,
+        itemId: item.itemId
       },
       ReturnValues:"ALL_OLD"
     }
@@ -123,7 +125,8 @@ export class CartDBAccess{
     const params = {
       TableName: this.cartTable,
       Key:{
-        keyId: newItem.itemId
+        userId: newItem.userId,
+        itemId: newItem.itemId
       },
       UpdateExpression: "set amount= :amount, price = :price",
       ConditionExpression: 'attribute_exists(itemId)',
