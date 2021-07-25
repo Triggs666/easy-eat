@@ -17,8 +17,9 @@ export class Dish{
     private readonly storageAccess:DishStorageAccess 
 
     constructor(){
-        this.logger = createLogger('businessLayer');
+        this.logger = createLogger('businessLayer::Dishes');
         this.dbAccess = new DishDBAccess();
+        this.storageAccess = new DishStorageAccess();
     }
 
     async getDishesByRestaturant(userId: string, restId: string):Promise<DishItem[]> {

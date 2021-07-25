@@ -8,7 +8,7 @@ const router: Router = Router();
 
 router.use('/rest', RestaurantRouter);
 router.use('/rest/:idRest/dish', DishRouter);
-router.use('/rest/:idRest/dish/:idDish/attachment', AttachRouter);
+router.use('/rest/:idRest/dish/:dishId/attachment', AttachRouter);
 router.use('/cart', CartRouter);
 
 router.get('/', async (req: Request, res: Response) => {

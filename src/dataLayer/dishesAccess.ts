@@ -15,7 +15,7 @@ export class DishDBAccess{
 
   constructor(){
       this.docClient = new AWS.DynamoDB.DocumentClient();
-      this.logger = createLogger('dataLayer::RestaurantAccess');
+      this.logger = createLogger('dataLayer::DishAccess');
   }
 
   async getDishListbyRestaurant(keyId:string):Promise<DishItem[]> {

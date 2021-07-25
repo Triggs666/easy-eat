@@ -6,18 +6,21 @@ import { Dish } from '../../../businessLayer/dishes';
 
 const logger = createLogger('attach-router')
 
-const router: Router = Router();
+const router: Router = Router({mergeParams: true});
 
 //const userId = 'auth0|60e0d2229fc0f400699888cd';
 
 router.post('/', async (req: Request, res: Response) => {
 
-  logger.info('Process the order');
+  logger.info('gereating image presigned url');
+  
   const {dishId} = req.params;
-  const dishes:Dish = new Dish()
+  console.log('dishID:',dishId);
+  const dishes:Dish = new Dish();
+
 
   const current_dish = await dishes.getDishById(dishId);
-  logger.info('Got dish ', {current_dish});
+  logger.info('Got dish', {current_dish});
 
   if (current_dish==undefined) {
     return {
@@ -43,7 +46,7 @@ router.post('/', async (req: Request, res: Response) => {
       body: JSON.stringify({error:'Server error generating URL'})
     }
   }
-
+/*
   return {
     statusCode: 201,
     headers: {
@@ -54,6 +57,8 @@ router.post('/', async (req: Request, res: Response) => {
       uploadUrl
     })
   }
+  */
+  res.status(201).send(JSON.stringify({uploadUrl}));
 
 });
 
