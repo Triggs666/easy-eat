@@ -6,14 +6,15 @@ import { DishDBAccess } from '../dataLayer/dishesAccess';
 import { CreateDishRequest } from '../requests/CreateDishRequest';
 import { UpdateDishRequest } from '../requests/UpdateDishRequest';
 import { CartItem } from '../models/CartItem';
-import { CartDBAccess } from '../dataLayer/cartAccess';
 import { Cart } from './cart';
+import { DishStorageAccess } from '../storageLayer/dishStorage';
+
 
 export class Dish{
 
     private readonly logger:Logger;
     private readonly dbAccess:DishDBAccess;
-    private readonly dbAccessCart:CartDBAccess; 
+    private readonly storageAccess:DishStorageAccess 
 
     constructor(){
         this.logger = createLogger('businessLayer');
@@ -100,6 +101,20 @@ export class Dish{
 
         const cart:Cart = new Cart();
         return await cart.createItemInUserCart (userId, restId, dishId, amount, dishItem.dishName, amount*dishItem.price)
+    }
+
+    async getUploadUrl(currentItem:DishItem): Promise<string> {
+
+        const imageId = uuid.v4();
+        const signedURL = this.storageAccess.getSignedUploadUrl(imageId);
+        const URL = this.storageAccess.getImageUrl(imageId);
+
+        this.logger.info('updateURLDishImage', {currentItem, URL});
+        const updatedItem = await this.dbAccess.updateURLDishImage(currentItem, URL);
+
+        if (updatedItem == undefined) return undefined;  //ERROR updating item!!!
+
+        return signedURL;
     }
 
 

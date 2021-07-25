@@ -39,19 +39,23 @@ export class Cart{
 
     async updateItemInUserCart(userId:string, itemId: string, itemData: UpdateCartItemRequest): Promise<CartItem> {
         
-        this.logger.info('Getting carItem full info', {userId, itemId});
-        const cartItems:CartItem[] = await this.dbAccess.getCartItemsById(userId, itemId);
-        if (cartItems == undefined || cartItems.length==0){
-            return undefined;
-        }
+        // Get cart item full data ...
 
-        const cartItem = cartItems[0];
+        const cartItem:CartItem = await this.getCartItemById(userId, itemId);
+        this.logger.info('Got cart item', {cartItem});
+
+        // Get dish price data ...
 
         const dish:Dish = new Dish();
         const dishItem: DishItem = await dish.getDishById(cartItem.dishId)
+        this.logger.info('Got related dish', {dishItem});
+
+        // Recalculate final price ...
 
         cartItem.amount = itemData.amount;
         cartItem.price = dishItem.price * itemData.amount;
+
+        // update cart item ...
 
         this.logger.info('updateItemInUserCart', {cartItem});
         return await this.dbAccess.updateCartItem(cartItem);
@@ -61,6 +65,18 @@ export class Cart{
 
         this.logger.info('getCartItemsByUserId', {userId})
         return this.dbAccess.getCartItemsByUser(userId);
+
+    }
+
+    async getCartItemById(userId: string, itemId: string): Promise<CartItem> {
+
+        this.logger.info('getCartItemById', {userId, itemId});
+        const cartItems:CartItem[] = await this.dbAccess.getCartItemsById(userId, itemId);
+        if (cartItems == undefined || cartItems.length==0){
+            return undefined;
+        }
+
+        return cartItems[0];
 
     }
 
@@ -93,14 +109,17 @@ export class Cart{
             const item:CartItem = items[i];
             this.logger.info('Notify item order', {item});
 
-            const restaurant: Restaurant = new Restaurant();
-            const restItems:RestaurantItem[] = await restaurant.getRestListbyRestId(userId, item.restId);
-            if (restItems==undefined || restItems.length==0){
-                return false;
+            const restaurants: Restaurant = new Restaurant();
+            const restItem:RestaurantItem = await restaurants.getRestaurantbyRestId(userId, item.restId);
+            if (restItem == undefined){
+                this.logger.error('Restaurant not found', {userId, item});
+                error = true;
             }
-            const topicARN = restItems[0].topicARN;
-            this.logger.info('Notify item order to topic ', {topicARN, item});
-            error = (await topic.notifyOrder(topicARN, item) == undefined);
+            else{
+                const topicARN = restItem.topicARN;
+                this.logger.info('Notify item order to topic ', {topicARN, item});
+                error = (await topic.notifyOrder(topicARN, item) == undefined);
+            }
 
         }
         

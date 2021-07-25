@@ -79,7 +79,7 @@ export class OrderSNSNotifier{
         });
 
         for (var i=0; i<list.length && list!=undefined; i++){
-            const subsARN = list[0].SubscriptionArn;
+            const subsARN = list[i].SubscriptionArn;
             await this.snsClient.unsubscribe({SubscriptionArn : subsARN}).promise()
             .then((data) => {
                 this.logger.info("unsubscription OK ",subsARN);

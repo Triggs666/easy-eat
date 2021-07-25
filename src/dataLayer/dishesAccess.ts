@@ -156,4 +156,36 @@ export class DishDBAccess{
     
   }
 
+  async updateURLDishImage(item: DishItem, URL: string):Promise<DishItem> {
+
+    const params = {
+      TableName: this.dishTable,
+      Key:{
+        keyId: item.keyId,
+        dishId: item.dishId
+      },
+      UpdateExpression: "set photoUrl =:url",
+      ExpressionAttributeValues:{
+          ":url":URL
+      },
+      ReturnValues:"UPDATED_NEW"
+    }
+    
+    this.logger.info('updateURLDishImage', {params})
+
+    var updatedItem: DishItem = undefined;
+    await this.docClient.update(params).promise()
+    .then((data) => {
+      this.logger.info("Update URL process finished OK", {data})
+      updatedItem = data as unknown as DishItem;
+    })
+    .catch((err) => {
+      this.logger.error("Update URL process ERROR:",err)
+    });
+
+    return updatedItem;
+    
+  }
+
+
 }
