@@ -156,4 +156,35 @@ export class RestaurantDBAccess{
     
   }
 
+  async updateURLRestLogo(item: RestaurantItem, URL: string):Promise<RestaurantItem> {
+
+    const params = {
+      TableName: this.restaurantTable,
+      Key:{
+        userId: item.userId,
+        restId: item.restId
+      },
+      UpdateExpression: "set logoUrl =:url",
+      ExpressionAttributeValues:{
+          ":url":URL
+      },
+      ReturnValues:"UPDATED_NEW"
+    }
+    
+    this.logger.info('updateURLRestLogo', {params})
+
+    var updatedItem: RestaurantItem = undefined;
+    await this.docClient.update(params).promise()
+    .then((data) => {
+      this.logger.info("Update URL process finished OK", {data})
+      updatedItem = data as unknown as RestaurantItem;
+    })
+    .catch((err) => {
+      this.logger.error("Update URL process ERROR:",err)
+    });
+
+    return updatedItem;
+    
+  }
+
 }

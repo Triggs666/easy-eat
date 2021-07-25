@@ -8,14 +8,17 @@ import { UpdateRestaurantRequest } from '../requests/UpdateRestaurantRequest';
 import { Topics } from './topics';
 import { Dish } from './dishes';
 import { DishItem } from '../models/DishItem';
+import { StorageAccess } from '../storageLayer/storageAccess';
 
 export class Restaurant{
     private readonly logger:Logger;
     private readonly dbAccess:RestaurantDBAccess;
+    private readonly storageAccess:StorageAccess;
 
     constructor(){
-        this.logger = createLogger('businessLayer');
+        this.logger = createLogger('businessLayer::Restaurants');
         this.dbAccess = new RestaurantDBAccess();
+        this.storageAccess = new StorageAccess();
     }
 
     async getRestaurantbyUserId(userId: string):Promise<RestaurantItem[]> {
@@ -118,6 +121,20 @@ export class Restaurant{
 
         this.logger.info('deleteRestaurantbyUserId', {deleteRest});
         return await this.dbAccess.deleteRestaurant(deleteRest);
+    }
+
+    async getUploadUrl(currentItem:RestaurantItem): Promise<string> {
+
+        const imageId = uuid.v4();
+        const signedURL = this.storageAccess.getSignedUploadUrl(imageId);
+        const URL = this.storageAccess.getImageUrl(imageId);
+
+        this.logger.info('updateURLDishImage', {currentItem, URL});
+        const updatedItem = await this.dbAccess.updateURLRestLogo(currentItem, URL);
+
+        if (updatedItem == undefined) return undefined;  //ERROR updating item!!!
+
+        return signedURL;
     }
 
 

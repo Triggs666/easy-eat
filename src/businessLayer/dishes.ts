@@ -7,19 +7,19 @@ import { CreateDishRequest } from '../requests/CreateDishRequest';
 import { UpdateDishRequest } from '../requests/UpdateDishRequest';
 import { CartItem } from '../models/CartItem';
 import { Cart } from './cart';
-import { DishStorageAccess } from '../storageLayer/dishStorage';
+import { StorageAccess } from '../storageLayer/storageAccess';
 
 
 export class Dish{
 
     private readonly logger:Logger;
     private readonly dbAccess:DishDBAccess;
-    private readonly storageAccess:DishStorageAccess 
+    private readonly storageAccess:StorageAccess 
 
     constructor(){
         this.logger = createLogger('businessLayer::Dishes');
         this.dbAccess = new DishDBAccess();
-        this.storageAccess = new DishStorageAccess();
+        this.storageAccess = new StorageAccess();
     }
 
     async getDishesByRestaturant(userId: string, restId: string):Promise<DishItem[]> {

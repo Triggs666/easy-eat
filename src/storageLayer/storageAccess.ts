@@ -2,7 +2,7 @@ import * as AWS from "aws-sdk";
 import { Logger } from "winston";
 import { createLogger } from "../utils/logger";
 
-export class DishStorageAccess{
+export class StorageAccess{
     
   private readonly s3:AWS.S3;
   private readonly logger:Logger;
