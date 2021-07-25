@@ -1,15 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "update-restaurant",
+  "title": "create-cart-item",
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string",
-      "minLength": 1
+    "amount": {
+      "type": "number"
     }
   },
   "required": [
-    "name"
+    "amount"
   ],
   "additionalProperties": false
 }

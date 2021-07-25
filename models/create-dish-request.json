@@ -1,15 +1,22 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "update-restaurant",
+  "title": "create-dish",
   "type": "object",
   "properties": {
-    "name": {
+    "dishName": {
       "type": "string",
       "minLength": 1
+    },
+    "ingridients": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
     }
   },
   "required": [
-    "name"
+    "dishName",
+    "price"
   ],
   "additionalProperties": false
 }

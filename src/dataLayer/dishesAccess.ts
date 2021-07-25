@@ -12,6 +12,7 @@ export class DishDBAccess{
   private readonly docClient:DocumentClient;
   private readonly logger:Logger;
   private readonly dishTable = process.env.DISH_TABLE;
+  private readonly dishIndex = process.env.DISH_INDEX_NAME;
 
   constructor(){
       this.docClient = new AWS.DynamoDB.DocumentClient();
@@ -24,7 +25,7 @@ export class DishDBAccess{
   
       var items = {};
 
-      const result = await this.docClient.query({
+      await this.docClient.query({
           TableName: this.dishTable,
           KeyConditionExpression: 'keyId = :keyId',
           ExpressionAttributeValues: {
@@ -50,9 +51,9 @@ export class DishDBAccess{
 
     var items = undefined;
 
-    const result = await this.docClient.query({
+    await this.docClient.query({
         TableName: this.dishTable,
-        IndexName: 'dishId-index',
+        IndexName: this.dishIndex,
         KeyConditionExpression: 'dishId = :dishId',
         ExpressionAttributeValues: {
           ':dishId': dishId

@@ -86,21 +86,19 @@ router.post('/', async (req: Request, res: Response) => {
   res.status(201).send(savedItem);
 });
 
-router.patch('/:id', async (req: Request, res: Response) => {
+router.patch('/:restId', async (req: Request, res: Response) => {
   logger.info('Updating a RESTAURANT ...')
-  const {id} = req.params;
+  const {restId} = req.params;
   const name = req.body.name;
-  const email = req.body.email;
 
   var newItem: UpdateRestaurantRequest = {
-    name: name,
-    email: email
+    name: name
   }
 
   logger.info('Updating a Restaurant', newItem)
 
   const rest = new Restaurant();
-  const savedItem = await rest.updateRestaurantbyUserRestId(userId,id,newItem)
+  const savedItem = await rest.updateRestaurantbyUserRestId(userId,restId,newItem)
   if (savedItem == undefined){
     res.status(500).send('Error Updating');
   } else {
@@ -113,14 +111,14 @@ router.patch('/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:restId', async (req: Request, res: Response) => {
   
-  const {id} = req.params;
+  const {restId} = req.params;
 
-  logger.info('Deleting the restaurant', id)
+  logger.info('Deleting the restaurant', restId)
 
   const rest = new Restaurant();
-  const deletedItem = await rest.deleteRestaurantbyUserId(userId,id)
+  const deletedItem = await rest.deleteRestaurantbyUserId(userId,restId)
   if (!deletedItem){
     res.status(500).send('Error deleting restaurant');
   } else {

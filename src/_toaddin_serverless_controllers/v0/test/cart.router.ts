@@ -32,9 +32,9 @@ router.get('/', async (req: Request, res: Response) => {
   res.send(items);
 });
 
-router.patch('/:id', async (req: Request, res: Response) => {
+router.patch('/:cartId', async (req: Request, res: Response) => {
   logger.info('Updating a Item ...')
-  const {id} = req.params;
+  const {cartId} = req.params;
   const {amount} = req.query;
 
   const nAmount = Number(amount);
@@ -43,7 +43,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
   logger.info('Updating a Item', {newItem});
 
   const cart = new Cart();
-  const savedItem = await cart.updateItemInUserCart(userId, id, newItem)
+  const savedItem = await cart.updateItemInUserCart(userId, cartId, newItem)
   if (savedItem == undefined){
     res.status(500).send('Error Updating');
   } else {
@@ -56,14 +56,14 @@ router.patch('/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:cartId', async (req: Request, res: Response) => {
   
-  const {id} = req.params;
+  const {cartId} = req.params;
 
-  logger.info('Deleting the cartItem', id)
+  logger.info('Deleting the cartItem', cartId)
 
   const cart = new Cart();
-  const deletedItem = await cart.deleteItemInUserCart(userId, id)
+  const deletedItem = await cart.deleteItemInUserCart(userId, cartId)
   if (!deletedItem){
     res.status(500).send('Error deleting restaurant');
   } else {
