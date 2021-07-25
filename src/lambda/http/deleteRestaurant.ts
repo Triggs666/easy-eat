@@ -2,17 +2,21 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
-import { Todos } from '../../businessLayer/todos'
-import { getUserId } from '../utils'
+import { getUserId, returnErrorMsg } from '../utils'
+import { Restaurant } from '../../businessLayer/restaurants'
 
-const logger = createLogger('auth')
+const logger = createLogger('lambda::DELETE_RESTAURANT')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
-  logger.info('Deleting a TODO', todoId)
+  const restId = event.pathParameters.restId
+  logger.info('Deleting a restaurant', restId)
 
-  const todos = new Todos();
-  await todos.deleteTodobyUserId(getUserId(event), todoId)
+  const rest = new Restaurant();
+  const deletedItem = await rest.deleteRestaurantbyUserId(getUserId(event),restId)
+  
+  if (!deletedItem){
+    return returnErrorMsg (500, 'Error Deleting restaurant!');
+  } 
 
   return {
     statusCode: 204,
