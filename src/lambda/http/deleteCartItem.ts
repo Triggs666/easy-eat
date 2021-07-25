@@ -3,22 +3,21 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 import { getUserId, returnErrorMsg } from '../utils'
-import { Dish } from '../../businessLayer/dishes'
+import { Cart } from '../../businessLayer/cart'
 
-const logger = createLogger('lambda::DELETE_DISH')
+const logger = createLogger('lambda::DELETE_CART_ITEM')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
-  const dishId = event.pathParameters.dishId
-  const restId = event.pathParameters.restId;
-  logger.info('Deleting the dish', {dishId,restId});
+  const cartId = event.pathParameters.cartId
 
-  const dish = new Dish();
-  const deletedItem = await dish.deleteDishbyUserId(getUserId(event),restId,dishId);
-  
+  logger.info('Deleting the cartItem', cartId)
+
+  const cart = new Cart();
+  const deletedItem = await cart.deleteItemInUserCart(getUserId(event), cartId)
   if (!deletedItem){
-    return returnErrorMsg (500, 'Error deleting dish');
-  }
+    return returnErrorMsg (500, 'Error deleting cart item!');
+  } 
   
   return {
     statusCode: 204,

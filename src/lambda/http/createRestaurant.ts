@@ -2,7 +2,7 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
-import { getUserId } from '../utils'
+import { getUserId, returnErrorMsg } from '../utils'
 import { CreateRestaurantRequest } from '../../requests/CreateRestaurantRequest'
 import { Restaurant } from '../../businessLayer/restaurants'
 
@@ -15,6 +15,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   
   const todos = new Restaurant();
   const item = await todos.createRestaurantbyUserId(getUserId(event), newRest)
+
+  if (item == undefined){
+    return returnErrorMsg (500, 'Error creting new restaurant!');
+  }
 
   return {
     statusCode: 201,

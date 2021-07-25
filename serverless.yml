@@ -56,12 +56,6 @@ custom:
       - name: UpdateDishRequest
         contentType: application/json
         schema: ${file(models/update-dish-request.json)}
-      - name: CreateCartItemRequest
-        contentType: application/json
-        schema: ${file(models/create-cart-item-request.json)}
-      - name: UpdateCartItemRequest
-        contentType: application/json
-        schema: ${file(models/update-cart-item-request.json)}
 
 
 # #################################################################################################################
@@ -256,12 +250,6 @@ functions:
           path: rest/{restId}/dish/{dishId}
           cors: true
           authorizer: Auth
-          reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Add dish into user cart
-            description: Add dish into user cart
-            requestModels:
-              'application/json': CreateDishRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -320,12 +308,6 @@ functions:
           path: cart/{cartId}
           cors: true
           authorizer: Auth
-          reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Update cart item data
-            description: Update cart item data
-            requestModels:
-              'application/json': UpdateCartItemRequest
     iamRoleStatements:
       - Effect: Allow
         Action:

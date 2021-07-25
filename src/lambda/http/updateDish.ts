@@ -2,29 +2,29 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { createLogger } from '../../utils/logger'
-import { Todos } from '../../businessLayer/todos'
-import { getUserId } from '../utils'
+import { getUserId, returnErrorMsg } from '../utils'
+import { UpdateDishRequest } from '../../requests/UpdateDishRequest'
+import { Dish } from '../../businessLayer/dishes'
 
 const logger = createLogger('lambda::UPDATE_DISH')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
-  const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
-  logger.info('Updating a TODO', {todoId, updatedTodo})
-  
-  const todos = new Todos();
-  const item = await todos.updateTodobyUserTodoId(getUserId(event), todoId, updatedTodo)
+ 
+  const dishId = event.pathParameters.dishId;
+  const restId = event.pathParameters.restId;
+  const updatedDish: UpdateDishRequest = JSON.parse(event.body)
+  logger.info('Updating dish', {dishId, restId, updatedDish})
 
-  if (item == undefined){
-    return {
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
-      body: 'Server error updating item'
+  const dish = new Dish();
+  const savedItem = await dish.updateDishbyUserRestId(getUserId(event), restId, dishId, updatedDish);
+
+  if (savedItem == undefined){
+    return returnErrorMsg (500, 'Error creting new dish!');
+  } else {
+    logger.info('Updated Dish', savedItem)
+    if (savedItem.dishName == undefined){
+      return returnErrorMsg (400, 'Dish does not exist!');
     }
   }
 
@@ -35,7 +35,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      item
+      savedItem
     })
   }
 }
