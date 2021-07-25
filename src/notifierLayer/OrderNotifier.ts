@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+import * as AWS from "aws-sdk";
 import { AWSError } from "aws-sdk";
 import { SNS } from "aws-sdk";
 import { Logger } from "winston";
@@ -9,7 +9,6 @@ export class OrderSNSNotifier{
   
     private readonly snsClient:SNS;
     private readonly logger:Logger;
-    private readonly dishTable = process.env.DISH_TABLE;
 
     constructor(){
         this.snsClient = new AWS.SNS({apiVersion: '2010-03-31'});
@@ -81,7 +80,7 @@ export class OrderSNSNotifier{
         for (var i=0; i<list.length && list!=undefined; i++){
             const subsARN = list[i].SubscriptionArn;
             await this.snsClient.unsubscribe({SubscriptionArn : subsARN}).promise()
-            .then((data) => {
+            .then((_data) => {
                 this.logger.info("unsubscription OK ",subsARN);
             })
             .catch((err: AWSError) => {
@@ -122,7 +121,7 @@ export class OrderSNSNotifier{
         this.logger.info("Deleting topic ",{topicARN});
 
         await this.snsClient.deleteTopic({TopicArn: topicARN}).promise()
-        .then((data) => {
+        .then((_data) => {
             this.logger.info("Topic deleted ",topicARN);
             return true;
         })

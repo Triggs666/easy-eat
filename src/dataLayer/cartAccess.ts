@@ -24,7 +24,7 @@ export class CartDBAccess{
   
       var items = {};
 
-      const result = await this.docClient.query({
+      await this.docClient.query({
         TableName: this.cartTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
@@ -50,7 +50,7 @@ export class CartDBAccess{
 
     var items = {};
 
-    const result = await this.docClient.query({
+    await this.docClient.query({
       TableName: this.cartTable,
       KeyConditionExpression: 'itemId = :itemId and userId = :userId',
       ExpressionAttributeValues: {

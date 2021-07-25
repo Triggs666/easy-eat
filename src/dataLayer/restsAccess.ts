@@ -24,7 +24,7 @@ export class RestaurantDBAccess{
   
       var items = {};
 
-      const result = await this.docClient.query({
+      await this.docClient.query({
           TableName: this.restaurantTable,
           KeyConditionExpression: 'userId = :userId',
           ExpressionAttributeValues: {
@@ -50,7 +50,7 @@ export class RestaurantDBAccess{
 
     var items = {};
 
-    const result = await this.docClient.query({
+    await this.docClient.query({
         TableName: this.restaurantTable,
         KeyConditionExpression: 'userId = :userId and restId = :restId',
         ExpressionAttributeValues: {

@@ -20,7 +20,7 @@ provider:
     DISH_TABLE: ot-aws-dyndb-dishTable
     CART_TABLE: ot-aws-dyndb-cartTable
     DISH_INDEX_NAME: ot-aws-dyndb-dishIndex
-    IMAGES_S3_BUCKET: ot-aws-s3-bucket-images-${self:provider.stage}
+    IMAGES_S3_BUCKET: ot-aws-s3-bucket-easy-eat-images
     SIGNED_URL_EXPIRATION: 300
 
 #  tracing:
@@ -46,10 +46,10 @@ custom:
     models:
       - name: CreateRestaurantRequest
         contentType: application/json
-        schema: ${file(models/create-restaturant-request.json)}
+        schema: ${file(models/create-restaurant-request.json)}
       - name: UpdateRestaurantRequest
         contentType: application/json
-        schema: ${file(models/update-restaturant-request.json)}
+        schema: ${file(models/update-restaurant-request.json)}
       - name: CreateDishRequest
         contentType: application/json
         schema: ${file(models/create-dish-request.json)}
@@ -403,7 +403,7 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.DISH_TABLE}
-        LocalSecondaryIndexes:
+        GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.DISH_INDEX_NAME}
             KeySchema:
               - AttributeName: dishId
