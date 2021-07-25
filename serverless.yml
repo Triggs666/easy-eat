@@ -19,7 +19,7 @@ provider:
     RESTAURANT_TABLE: ot-aws-dyndb-restaurantTable
     DISH_TABLE: ot-aws-dyndb-dishTable
     CART_TABLE: ot-aws-dyndb-cartTable
-    DISH_INDEX_NAME: dishId-index
+    DISH_INDEX_NAME: ot-aws-dyndb-dishIndex
     IMAGES_S3_BUCKET: ot-aws-s3-bucket-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
@@ -367,32 +367,60 @@ resources:
         ValidateRequestBody: true
         ValidateRequestParameters: false
 
-    TodoSDynamoDBTable:
+    RestaurantDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: todoId
-            AttributeType: S
-          - AttributeName: dueDate
+          - AttributeName: restId
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: restId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.RESTAURANT_TABLE}
+
+    DishDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: keyId
+            AttributeType: S
+          - AttributeName: dishId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: keyId
+            KeyType: HASH
+          - AttributeName: dishId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DISH_TABLE}
         LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.INDEX_NAME}
+          - IndexName: ${self:provider.environment.DISH_INDEX_NAME}
             KeySchema:
-              - AttributeName: userId
+              - AttributeName: dishId
                 KeyType: HASH
-              - AttributeName: dueDate
-                KeyType: RANGE
             Projection:
-              ProjectionType: ALL 
+              ProjectionType: ALL
+
+    CartDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: itemId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: itemId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CART_TABLE}
 
     AttachmentsBucket:
       Type: AWS::S3::Bucket
@@ -426,4 +454,4 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
-
+        
