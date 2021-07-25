@@ -17,7 +17,7 @@ export class Dish{
     private readonly storageAccess:StorageAccess 
 
     constructor(){
-        this.logger = createLogger('businessLayer::Dishes');
+        this.logger = createLogger('businessLayer::DISHES');
         this.dbAccess = new DishDBAccess();
         this.storageAccess = new StorageAccess();
     }

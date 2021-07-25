@@ -20,7 +20,7 @@ export class DishDBAccess{
 
   async getDishListbyRestaurant(keyId:string):Promise<DishItem[]> {
 
-      this.logger.info('getDishesByRestaturant', {tableName: this.dishTable, keyId})
+      this.logger.info('getDishListbyRestaurant', {tableName: this.dishTable, keyId})
   
       var items = {};
 

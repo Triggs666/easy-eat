@@ -11,7 +11,7 @@ export class StorageAccess{
 
   constructor(){
     this.s3 = new AWS.S3({signatureVersion: 'v4'});
-    this.logger = createLogger('STORAGE_LAYER::DISH_ACCESS');
+    this.logger = createLogger('storageLAyer::STORAGE_ACCESS');
   }
 
   getImageUrl(imageId: string):string {

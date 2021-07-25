@@ -16,7 +16,7 @@ export class Cart{
     private readonly dbAccess:CartDBAccess; 
 
     constructor(){
-        this.logger = createLogger('businessLayer');
+        this.logger = createLogger('businessLayer::CART');
         this.dbAccess = new CartDBAccess();
     }
 
@@ -100,14 +100,22 @@ export class Cart{
 
         this.logger.info('Process user order', {userId})
 
-        const topic:Topics = new Topics();
+        // Get full info from cart item list ...
+
         const items:CartItem[] = await this.dbAccess.getCartItemsByUser(userId);
+        this.logger.info('Elements in CART', {imetsLength: items.length});
 
         var error = false;
+        const topic:Topics = new Topics();
+
+        //Notify the order to restaurants ...
+
         for (var i=0; i<items.length && !error; i++){
 
             const item:CartItem = items[i];
             this.logger.info('Notify item order', {item});
+
+            //Get the topic ARN to notify de order ...
 
             const restaurants: Restaurant = new Restaurant();
             const restItem:RestaurantItem = await restaurants.getRestaurantbyRestId(userId, item.restId);
@@ -117,13 +125,15 @@ export class Cart{
             }
             else{
                 const topicARN = restItem.topicARN;
-                this.logger.info('Notify item order to topic ', {topicARN, item});
+                this.logger.info('Notify item order to topic', {topicARN, item});
                 error = (await topic.notifyOrder(topicARN, item) == undefined);
             }
 
         }
         
         if (error) return false;
+
+        //Delete items from user cart ...
 
         for (var i=0; i<items.length && !error; i++){
 

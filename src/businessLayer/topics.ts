@@ -9,7 +9,7 @@ export class Topics{
     private readonly notifier:OrderSNSNotifier;
 
     constructor(){
-        this.logger = createLogger('businessLayer::topics');
+        this.logger = createLogger('businessLayer::TOPICS');
         this.notifier = new OrderSNSNotifier();
     }
 
@@ -29,7 +29,7 @@ export class Topics{
     }
 
     async unsubscribeTopic(topicARN: string): Promise<boolean> {
-        this.logger.info('subscribeMailTopic', {topicARN});
+        this.logger.info('unsubscribeTopic', {topicARN});
         return this.notifier.unsubscribeTopic(topicARN);
     }
 

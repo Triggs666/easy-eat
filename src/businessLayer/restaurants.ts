@@ -16,14 +16,14 @@ export class Restaurant{
     private readonly storageAccess:StorageAccess;
 
     constructor(){
-        this.logger = createLogger('businessLayer::Restaurants');
+        this.logger = createLogger('businessLayer::RESTAURANTS');
         this.dbAccess = new RestaurantDBAccess();
         this.storageAccess = new StorageAccess();
     }
 
     async getRestaurantbyUserId(userId: string):Promise<RestaurantItem[]> {
 
-        this.logger.info('getREsbyUserId', {userId})
+        this.logger.info('getRestaurantbyUserId', {userId})
         return this.dbAccess.getRestListbyUserId(userId);
     
     }
@@ -47,9 +47,14 @@ export class Restaurant{
 
         const restId = uuid.v4();
 
+        //Create restaurant topic to notify the orders ...
+
         const topic: Topics = new Topics();
         const topicARN = await topic.createTopicByRestId(restId);
         if (topicARN!=undefined){
+
+             //Create susbscription with restaurant email ...
+
             const subsId = topic.subscribeMailTopic(topicARN,newItem.email);
             if (subsId!=undefined){
                 this.logger.info('Topic created for restaurant', {restId, topicARN});
@@ -63,6 +68,7 @@ export class Restaurant{
             this.logger.info('Error creating topic for restaurant', {restId, topicARN});
         }
         
+        // Save restaurant item ...
 
         const newRest:RestaurantItem = {
             userId,
