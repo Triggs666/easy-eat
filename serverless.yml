@@ -152,8 +152,15 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
       - Effect: Allow
         Action:
+          - dynamodb:Query
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Unsubscribe
+          - SNS:DeleteTopic
+        Resource: arn:aws:sns:${self:provider.region}:*:*
 
   GenerateUploadUrl_RestLogo:
     handler: src/lambda/http/generateUploadUrl_RestLogo.handler
@@ -166,7 +173,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
+          - dynamodb:Query
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
       - Effect: Allow
@@ -174,6 +181,7 @@ functions:
           - s3:PutObject
           - s3:GetObject
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+
 
 # ------------------------------------------------------------------------
 # Dishes functions 

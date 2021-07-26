@@ -12,11 +12,15 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Deleting a restaurant', restId)
 
   const rest = new Restaurant();
-  const deletedItem = await rest.deleteRestaurantbyUserId(getUserId(event),restId)
+  const errorCode = await rest.deleteRestaurantbyUserId(getUserId(event),restId)
   
-  if (!deletedItem){
+  if (errorCode == -2){
     return returnErrorMsg (500, 'Error Deleting restaurant!');
-  } 
+  } else{
+    if (errorCode == -1){
+      return returnErrorMsg (400, 'Restaurant NOT FOUND!');
+    }
+  }
 
   return {
     statusCode: 204,

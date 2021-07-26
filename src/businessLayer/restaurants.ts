@@ -96,12 +96,15 @@ export class Restaurant{
     
     }
 
-    async deleteRestaurantbyUserId(userId: string, restId: string): Promise<boolean> {
+    async deleteRestaurantbyUserId(userId: string, restId: string): Promise<number> {
 
         //Get full restaurant info ...
 
         const deleteRest: RestaurantItem = await this.getRestaurantbyRestId(userId, restId);
-
+        if (deleteRest == undefined){
+            this.logger.error('restaurant NOT FOUND!', {userId, restId});
+            return -1;
+        }
 
         //delete subscriptions and topic ...
 
@@ -118,15 +121,22 @@ export class Restaurant{
 
         const dish: Dish = new Dish();
         const dishes: DishItem[] = await dish.getDishesByRestaturant(userId, restId);
-        for (var i=0;i<dishes.length;i++){
+        for (var i=0;dishes!=undefined && i<dishes.length;i++){
             const dishItem:DishItem = dishes[i];
-            dish.deleteDishbyUserId(userId, restId,dishItem.dishId);
+            dish.deleteDishbyUserId(userId, restId, dishItem.dishId);
         }
 
         //delete restaurant ...
 
         this.logger.info('deleteRestaurantbyUserId', {deleteRest});
-        return await this.dbAccess.deleteRestaurant(deleteRest);
+        if (await this.dbAccess.deleteRestaurant(deleteRest)){
+            return 0;
+        }
+        else{
+            // Error deleting item ...
+            return -1;
+        }
+        
     }
 
     async getUploadUrl(currentItem:RestaurantItem): Promise<string> {

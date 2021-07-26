@@ -60,7 +60,7 @@ export class OrderSNSNotifier{
 
     async unsubscribeTopic(topicARN:string): Promise<boolean> {
         
-        this.logger.info("unsubscribing topic ", {topicARN});
+        this.logger.info("unsubscribing topic", {topicARN});
         var subscriptionArn = undefined;
 
         const params = {
@@ -77,7 +77,7 @@ export class OrderSNSNotifier{
             this.logger.error("subscription list process ERROR:", err);
         });
 
-        for (var i=0; i<list.length && list!=undefined; i++){
+        for (var i=0; list!=undefined && i<list.length; i++){
             const subsARN = list[i].SubscriptionArn;
             await this.snsClient.unsubscribe({SubscriptionArn : subsARN}).promise()
             .then((_data) => {
