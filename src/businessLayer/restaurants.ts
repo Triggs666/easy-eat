@@ -55,7 +55,7 @@ export class Restaurant{
 
              //Create susbscription with restaurant email ...
 
-            const subsId = topic.subscribeMailTopic(topicARN,newItem.email);
+            const subsId = await topic.subscribeMailTopic(topicARN,newItem.email);
             if (subsId!=undefined){
                 this.logger.info('Topic created for restaurant', {restId, topicARN});
             }

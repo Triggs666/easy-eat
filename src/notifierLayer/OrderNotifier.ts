@@ -24,7 +24,7 @@ export class OrderSNSNotifier{
         await this.snsClient.createTopic({Name: topicId}).promise()
         .then((data) => {
             topicARN = data.TopicArn;
-            this.logger.info("Topic created ",topicARN);
+            this.logger.info("Topic created ",{topicARN});
         })
         .catch((err: AWSError) => {
             this.logger.error("Create topic process ERROR:", err);
@@ -48,7 +48,7 @@ export class OrderSNSNotifier{
         await this.snsClient.subscribe(params).promise()
         .then((data) => {
             subscriptionArn = data.SubscriptionArn;
-            this.logger.info("subscription created ",subscriptionArn);
+            this.logger.info("subscription created",{subscriptionArn});
         })
         .catch((err: AWSError) => {
             this.logger.error("Create subscription process ERROR:", err);

@@ -110,6 +110,11 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - SNS:CreateTopic
+          - SNS:Subscribe
+        Resource: arn:aws:sns:${self:provider.region}:*:*
 
   UpdateRestaurant:
     handler: src/lambda/http/updateRestaurant.handler
@@ -142,6 +147,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:Query
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
       - Effect: Allow

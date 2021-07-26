@@ -13,8 +13,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const newRest: CreateRestaurantRequest = JSON.parse(event.body)
   logger.info('Creating a Restaurant', newRest)
   
-  const todos = new Restaurant();
-  const item = await todos.createRestaurantbyUserId(getUserId(event), newRest)
+  const rests = new Restaurant();
+  const item = await rests.createRestaurantbyUserId(getUserId(event), newRest)
 
   if (item == undefined){
     return returnErrorMsg (500, 'Error creting new restaurant!');
