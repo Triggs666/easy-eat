@@ -267,28 +267,36 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:DeleteItem
+          - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
 
-  GenerateUploadUrl_DishPhoto:
+  GenerateUrl_DishPhoto:
     handler: src/lambda/http/generateUploadUrl_DishPhoto.handler
     events:
       - http:
           method: post
-          path: rest/{restId}/dish/{dishId}
+          path: rest/{restId}/dish/{dishId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
+          - dynamodb:Query
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
       - Effect: Allow
         Action:
           - s3:PutObject

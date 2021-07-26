@@ -9,9 +9,9 @@ const logger = createLogger('lambda::ADD_DISH_TO_CART')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
-  const amount = event.pathParameters.amount;
-  const idRest = event.pathParameters.idRest;
-  const idDish = event.pathParameters.idDish;
+  const amount = event.queryStringParameters.amount;
+  const restId = event.pathParameters.restId;
+  const dishId = event.pathParameters.dishId;
   var nAmount = 0;
   
   if (!amount) {
@@ -26,10 +26,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
 
-  logger.info('Add the dish to the user cart', {idRest, idDish, nAmount})
+  logger.info('Add the dish to the user cart', {restId, dishId, nAmount})
 
   const dish = new Dish();
-  const cartItem = await dish.putDishInUserCart(getUserId(event),idRest,idDish,nAmount);
+  const cartItem = await dish.putDishInUserCart(getUserId(event), restId, dishId,nAmount);
   if (!cartItem){
     return returnErrorMsg (500, 'Error adding dish to cart!');
   }
