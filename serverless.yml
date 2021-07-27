@@ -75,6 +75,8 @@ functions:
   Auth_ADMIN:
     handler: src/lambda/auth/auth0Authorizer_ADMIN.handler
 
+  Auth_CLI:
+    handler: src/lambda/auth/auth0Authorizer_CLI.handler
 # ------------------------------------------------------------------------
 # Restaurant functions 
 # ------------------------------------------------------------------------
@@ -83,8 +85,8 @@ functions:
     handler: src/lambda/http/getAllRestaurant.handler
     events:
       - http:
-          method: view
-          path: rest
+          method: get
+          path: restView
           cors: true
           authorizer: Auth   
     iamRoleStatements:
