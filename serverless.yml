@@ -88,7 +88,7 @@ functions:
           method: get
           path: restView
           cors: true
-          authorizer: Auth   
+          authorizer: Auth_CLI   
     iamRoleStatements:
       - Effect: Allow
         Action:
