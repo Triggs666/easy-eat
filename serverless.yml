@@ -72,6 +72,9 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
+  Auth_ADMIN:
+    handler: src/lambda/auth/auth0Authorizer_ADMIN.handler
+
 # ------------------------------------------------------------------------
 # Restaurant functions 
 # ------------------------------------------------------------------------
@@ -98,7 +101,7 @@ functions:
           method: post
           path: rest
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Create a new restaurant
@@ -123,7 +126,7 @@ functions:
           method: patch
           path: rest/{restId}
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Update restaurant data
@@ -143,7 +146,7 @@ functions:
           method: delete
           path: rest/{restId}
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -169,7 +172,7 @@ functions:
           method: post
           path: rest/{restId}/attachment
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -209,7 +212,7 @@ functions:
           method: post
           path: rest/{restId}/dish
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Create a new dish for a restaurant
@@ -229,7 +232,7 @@ functions:
           method: patch
           path: rest/{restId}/dish/{dishId}
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Update dish information
@@ -249,7 +252,7 @@ functions:
           method: delete
           path: rest/{restId}/dish/{dishId}
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -286,7 +289,7 @@ functions:
           method: post
           path: rest/{restId}/dish/{dishId}/attachment
           cors: true
-          authorizer: Auth
+          authorizer: Auth_ADMIN
     iamRoleStatements:
       - Effect: Allow
         Action:

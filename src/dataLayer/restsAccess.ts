@@ -127,6 +127,7 @@ export class RestaurantDBAccess{
         restId: newItem.restId
       },
       UpdateExpression: "set #N=:name",
+      ConditionExpression: 'attribute_exists(restId)',
       ExpressionAttributeValues:{
           ":name":newItem.name,
       },
