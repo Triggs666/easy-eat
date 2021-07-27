@@ -28,6 +28,13 @@ export class Restaurant{
     
     }
 
+    async getAllRestaurants():Promise<RestaurantItem[]> {
+
+        this.logger.info('getAllRestaurants')
+        return this.dbAccess.getAllRestaurants();
+    
+    }
+
     async getRestaurantbyRestId(userId: string, restId: string):Promise<RestaurantItem> {
 
         this.logger.info('getRestListbyRestId', {userId, restId})

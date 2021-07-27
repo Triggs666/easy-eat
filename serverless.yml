@@ -79,6 +79,20 @@ functions:
 # Restaurant functions 
 # ------------------------------------------------------------------------
 
+  GetAllRestaurant:
+    handler: src/lambda/http/getAllRestaurant.handler
+    events:
+      - http:
+          method: view
+          path: rest
+          cors: true
+          authorizer: Auth   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+
   GetRestaurant:
     handler: src/lambda/http/getRestaurant.handler
     events:

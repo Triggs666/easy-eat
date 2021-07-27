@@ -44,6 +44,27 @@ export class RestaurantDBAccess{
   
   }
 
+  async getAllRestaurants():Promise<RestaurantItem[]> {
+
+    this.logger.info('getAllRestaurants', {tableNAme: this.restaurantTable})
+
+    var items = {};
+
+    await this.docClient.scan({
+        TableName: this.restaurantTable
+      }).promise()
+      .then((data) => {
+        this.logger.info("Get process finished OK", {data})
+        items = data.Items;
+      })
+      .catch((err: AWSError) => {
+        this.logger.error("Get process ERROR:",err)
+      });
+
+    return items as RestaurantItem[];
+
+  }
+
   async getRestListbyRestId(userId: string, restId: string):Promise<RestaurantItem[]> {
 
     this.logger.info('getRestListbyUserId', {tableNAme: this.restaurantTable, userId})

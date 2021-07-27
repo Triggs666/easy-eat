@@ -7,14 +7,15 @@ import { Restaurant } from '../../businessLayer/restaurants'
 
 
 
-const logger = createLogger('lambda-getTodos')
+const logger = createLogger('lambda::GET_RESTAURANTS')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
-  logger.info('Getting all restaurants')
+  const userId = getUserId(event);
+  logger.info('Getting all restaurants for current user',{userId})
   
   const rests = new Restaurant();
-  const items = await rests.getRestaurantbyUserId(getUserId(event))
+  const items = await rests.getRestaurantbyUserId(userId);
 
   return {
     statusCode: 200,
