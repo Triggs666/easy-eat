@@ -279,7 +279,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
 
-  GenerateUrl_DishPhoto:
+  GenerateUploadUrl_DishPhoto:
     handler: src/lambda/http/generateUploadUrl_DishPhoto.handler
     events:
       - http:
@@ -342,6 +342,10 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
 
   DeleteCartItem:
     handler: src/lambda/http/deleteCartItem.handler
@@ -377,6 +381,11 @@ functions:
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - SNS:Publish
+        Resource: arn:aws:sns:${self:provider.region}:*:*
+
 
 
 # #################################################################################################################

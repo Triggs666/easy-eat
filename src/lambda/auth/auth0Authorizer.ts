@@ -36,24 +36,43 @@ F5LRpIiQ7b0pEtZkexn0Ch8=
 
 
 export const handler = async (event: CustomAuthorizerEvent): Promise<CustomAuthorizerResult> => {
-  logger.info('Authorizing a user', event.authorizationToken)
+  logger.info('Authorizing a user', {event})
   try {
     const jwtToken = await verifyToken(event.authorizationToken)
     logger.info('User was authorized', jwtToken)
 
-    return {
-      principalId: jwtToken.sub,
-      policyDocument: {
-        Version: '2012-10-17',
-        Statement: [
-          {
-            Action: 'execute-api:Invoke',
-            Effect: 'Allow',
-            Resource: '*'
-          }
-        ]
+    if (jwtToken.nickname=='a'){
+
+      return {
+        principalId: jwtToken.sub,
+        policyDocument: {
+          Version: '2012-10-17',
+          Statement: [
+            {
+              Action: 'execute-api:Invoke',
+              Effect: 'Allow',
+              Resource: '*'
+            }
+          ]
+        }
       }
     }
+    else{
+      return {
+        principalId: 'user',
+        policyDocument: {
+          Version: '2012-10-17',
+          Statement: [
+            {
+              Action: 'execute-api:Invoke',
+              Effect: 'Deny',
+              Resource: '*'
+            }
+          ]
+        }
+      }
+    }
+    
   } catch (e) {
     logger.error('User not authorized', { error: e.message })
 
