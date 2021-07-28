@@ -1,4 +1,5 @@
 import * as AWS  from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { createLogger } from '../utils/logger'
@@ -14,7 +15,8 @@ export class CartDBAccess{
   private readonly cartTable = process.env.CART_TABLE;
 
   constructor(){
-      this.docClient = new AWS.DynamoDB.DocumentClient();
+      const XAWS  = AWSXRay.captureAWS(AWS)
+      this.docClient = new XAWS.DynamoDB.DocumentClient();
       this.logger = createLogger('dataLayer::CartAccess');
   }
 

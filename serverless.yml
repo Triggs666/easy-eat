@@ -25,17 +25,17 @@ provider:
     IMAGES_S3_BUCKET: ot-aws-s3-bucket-easy-eat-images
     SIGNED_URL_EXPIRATION: 300
 
-#  tracing:
-#    lambda: true
-#    apiGateway: true
+  tracing:
+    lambda: true
+    apiGateway: true
 
-# iamRoleStatements:
-#    - Effect: 'Allow'
-#      Action:
-#        - 'xray:PutTraceSegments'
-#        - 'xray:PutTelemetryRecords'
-#      Resource:
-#        - '*' 
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'xray:PutTraceSegments'
+        - 'xray:PutTelemetryRecords'
+      Resource:
+        - '*' 
 
 
 custom:
