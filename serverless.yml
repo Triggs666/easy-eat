@@ -435,6 +435,10 @@ functions:
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+     - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}/index/${self:provider.environment.RESTAURANT_INDEX_NAME}
       - Effect: Allow
         Action:
           - SNS:Publish
