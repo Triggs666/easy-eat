@@ -43,6 +43,15 @@ export class Cart{
 
         const cartItem:CartItem = await this.getCartItemById(userId, itemId);
         this.logger.info('Got cart item', {cartItem});
+        if (cartItem == undefined) return {
+            userId: undefined,
+            itemId: undefined,
+            restId: undefined,
+            dishId: undefined,
+            dishName: undefined,
+            amount: undefined,
+            price: undefined
+        };
 
         // Get dish price data ...
 
