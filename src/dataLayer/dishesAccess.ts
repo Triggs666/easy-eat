@@ -70,8 +70,7 @@ export class DishDBAccess{
       });
 
     return items as DishItem[];
-
-}
+  }
 
   async getDishesById(dishId:string):Promise<DishItem[]> {
 
@@ -97,8 +96,7 @@ export class DishDBAccess{
       });
 
     return items as DishItem[];
-
-}
+  }
 
   async createDishbyRestaurant(newItem: DishItem):Promise<DishItem> {
 

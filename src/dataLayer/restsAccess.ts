@@ -12,6 +12,7 @@ export class RestaurantDBAccess{
   private readonly docClient:DocumentClient;
   private readonly logger:Logger;
   private readonly restaurantTable = process.env.RESTAURANT_TABLE;
+  private readonly restaurantIndex = process.env.RESTAURANT_INDEX_NAME;
 
   constructor(){
       this.docClient = new AWS.DynamoDB.DocumentClient();
@@ -42,6 +43,32 @@ export class RestaurantDBAccess{
 
       return items as RestaurantItem[];
   
+  }
+
+  async getRestaurantsById(restId:string):Promise<RestaurantItem[]> {
+
+    this.logger.info('getDishesById', {tableName: this.restaurantTable, restId})
+
+    var items = undefined;
+
+    await this.docClient.query({
+        TableName: this.restaurantTable,
+        IndexName: this.restaurantIndex,
+        KeyConditionExpression: 'restId = :restId',
+        ExpressionAttributeValues: {
+          ':restId': restId
+        },
+        ScanIndexForward: false
+      }).promise()
+      .then((data) => {
+        this.logger.info("get process finished OK", {data})
+        items = data.Items;
+      })
+      .catch((err: AWSError) => {
+        this.logger.error("Create process ERROR:",err)
+      });
+
+    return items as RestaurantItem[];
   }
 
   async getAllRestaurants():Promise<RestaurantItem[]> {

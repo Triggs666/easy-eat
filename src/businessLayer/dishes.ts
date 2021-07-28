@@ -121,7 +121,7 @@ export class Dish{
 
         //Check restId ...
         const rests:Restaurant = new Restaurant();
-        const restItem: RestaurantItem = await rests.getRestaurantbyRestId(userId, restId);
+        const restItem: RestaurantItem = await rests.getRestaurantbyId(restId);
         
         if (dishItem == undefined || restItem == undefined) return {
             userId: undefined,

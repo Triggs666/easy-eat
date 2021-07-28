@@ -19,6 +19,7 @@ provider:
     RESTAURANT_TABLE: ot-aws-dyndb-restaurantTable
     DISH_TABLE: ot-aws-dyndb-dishTable
     CART_TABLE: ot-aws-dyndb-cartTable
+    RESTAURANT_INDEX_NAME: ot-aws-dyndb-restIndex
     DISH_INDEX_NAME: ot-aws-dyndb-dishIndex
     DISH_REST_INDEX_NAME: ot-aws-dyndb-dishRestIndex
     IMAGES_S3_BUCKET: ot-aws-s3-bucket-easy-eat-images
@@ -467,6 +468,13 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.RESTAURANT_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.RESTAURANT_INDEX_NAME}
+            KeySchema:
+              - AttributeName: restId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
 
     DishDynamoDBTable:
       Type: AWS::DynamoDB::Table

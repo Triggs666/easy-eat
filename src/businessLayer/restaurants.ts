@@ -48,6 +48,19 @@ export class Restaurant{
     
     }
 
+    async getRestaurantbyId(restId: string):Promise<RestaurantItem> {
+
+        this.logger.info('getRestaurantbyId', {restId})
+        const restItems:RestaurantItem[] = await this.dbAccess.getRestaurantsById(restId);
+        if (restItems==undefined || restItems.length==0){
+            return undefined;
+        }
+        else{
+            return restItems[0];
+        }
+    
+    }
+
     async createRestaurantbyUserId(userId: string, newItem:CreateRestaurantRequest):Promise<RestaurantItem> {
 
         this.logger.info('createRestaurantbyUserId', {userId, newItem});

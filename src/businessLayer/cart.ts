@@ -127,7 +127,7 @@ export class Cart{
             //Get the topic ARN to notify de order ...
 
             const restaurants: Restaurant = new Restaurant();
-            const restItem:RestaurantItem = await restaurants.getRestaurantbyRestId(userId, item.restId);
+            const restItem:RestaurantItem = await restaurants.getRestaurantbyId(item.restId);
             if (restItem == undefined){
                 this.logger.error('Restaurant not found', {userId, item});
                 error = true;
