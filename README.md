@@ -85,7 +85,9 @@
 #### User tests for backend are included as Postman Collection
 
  
-
+* Postman files
+  - *CapstoneProject.postman_collection_easy-eat.json* (tests collection)
+  - *easy-eat.postman_environment.json* (environment variables)
 * Application was added in Auth0 platform and Postman was configured to get users token
 * Three different users are already created to execute tests
   - ADMIN1 (“restaurant manager”)
