@@ -492,7 +492,6 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-        GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.DISH_REST_INDEX_NAME}
             KeySchema:
               - AttributeName: restId
