@@ -54,10 +54,10 @@ export class DishDBAccess{
 
     await this.docClient.query({
         TableName: this.dishTable,
-        IndexName: this.dishIndex,
-        KeyConditionExpression: 'dishId = :dishId',
+        IndexName: this.dishRestIndex,
+        KeyConditionExpression: 'restId = :restId',
         ExpressionAttributeValues: {
-          ':dishId': dishId
+          ':restId': restId
         },
         ScanIndexForward: false
       }).promise()
