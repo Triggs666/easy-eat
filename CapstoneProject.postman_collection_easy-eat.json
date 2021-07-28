@@ -1,0 +1,1255 @@
+{
+	"info": {
+		"_postman_id": "db940285-40b1-4a93-b41a-bc1ade5ca213",
+		"name": "CapstoneProject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ADMIN1",
+			"item": [
+				{
+					"name": "Restaurants",
+					"item": [
+						{
+							"name": "get all restaurants AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all rest by user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create new restaurant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Mc Donnalds\",\n    \"email\": \"oscar.triguero@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create new restaurant BAD BODY",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Mc Donnalds\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update restaurant",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Mc Donnalds 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update restaurant BAD BODY",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nameX\": \"Mc Donnalds 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update restaurant logo",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete restaurant",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Dishes",
+					"item": [
+						{
+							"name": "get all dishes by restaurant AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all dishes by restaurant",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create dish",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create dish BAD BODY",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishNameX\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": A\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": 15\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish BAD BODY",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": A\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish image",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete dish",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InB4YUY4MFBjaUp1dmlBMm15S0N1QyJ9.eyJuaWNrbmFtZSI6ImFkbWluMSIsIm5hbWUiOiJhZG1pbjFAZWFzeS1lYXQuY29tIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyL2JlMDcxMTZlMGU4NjdhOTUxNzkwY2UyZjMxZmIzN2I1P3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGYWQucG5nIiwidXBkYXRlZF9hdCI6IjIwMjEtMDctMjhUMTc6NTc6MjQuMzUzWiIsImVtYWlsIjoiYWRtaW4xQGVhc3ktZWF0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbWJ1Yjlwc2guZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxMDA1ZDdlYjA2YjY3MDA2OWRhZGMwMyIsImF1ZCI6IndDY2RuR0NhcmFrNzVHOUNNQlQwNGx6U3RFb2V6bFNFIiwiaWF0IjoxNjI3NDk1MDQ1LCJleHAiOjE2MjgzNTkwNDV9.NUGMva1Au89c-jeYcMMPvMv8dqwKSukIxZ2ORIHqnRiR6EbgqaLefTmOZPQyYw06m7ozDyQvQAWa-sbg3B4bUK44Ds8bUb13aMXnrKYFEvzYda1EzwivWm-kwdFiBrwap1-ovGDdGjNtRBh4gghmpDWir_3HYvxs0ARC_nxtJ_umVIbHhf_aUnIH3bqMKMz5UJ5217koDXefoLp9Olo1qnyC9gGKmOQtT4Yo6HTwRSKyn2V2F8F0nlinGgIMiNjiuKgKxpMqkzb8UtcSegIRNFp8oY2SAPpYrCuRjItg81k-emEQUgU1EGWyWsXEGVV8RI246szdlSiru7rkkZZVlA",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "ADMIN2",
+			"item": [
+				{
+					"name": "Restaurants",
+					"item": [
+						{
+							"name": "get all restaurants AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all rest by user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create new restaurant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Pizza Hut\",\n    \"email\": \"oscar.triguero@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create new restaurant BAD BODY",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Mc Donnalds\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update restaurant",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Pizza Hut 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update restaurant BAD BODY",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nameX\": \"Mc Donnalds 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update restaurant logo",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete restaurant",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Dishes",
+					"item": [
+						{
+							"name": "get all dishes by restaurant AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all dishes by restaurant",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create dish",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"Pepperoni Pizza\",\n    \"ingridients\": \"Tomato, cheese, pepperoni\",\n    \"price\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create dish BAD BODY",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishNameX\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": A\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"Pepperoni Pizza\",\n    \"ingridients\": \"Tomato, cheese, pepperoni\",\n    \"price\": 15\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish BAD BODY",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": A\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish image",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete dish",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InB4YUY4MFBjaUp1dmlBMm15S0N1QyJ9.eyJuaWNrbmFtZSI6ImFkbWluMiIsIm5hbWUiOiJhZG1pbjJAZWFzeS1lYXQuY29tIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyL2QwNDg4Y2FmNDgwZTVjNDFlOTdkZWE1OWE4ODYwMWVhP3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGYWQucG5nIiwidXBkYXRlZF9hdCI6IjIwMjEtMDctMjhUMTc6NTY6MTguNzc0WiIsImVtYWlsIjoiYWRtaW4yQGVhc3ktZWF0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbWJ1Yjlwc2guZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxMDA1ZGRlMzY3OGJmMDA3MmZmNDE1MCIsImF1ZCI6IndDY2RuR0NhcmFrNzVHOUNNQlQwNGx6U3RFb2V6bFNFIiwiaWF0IjoxNjI3NDk0OTc5LCJleHAiOjE2MjgzNTg5Nzl9.JyOCF-o4qciWn2790-KfJuweS7EP-JLKRwQwNNRXblAD3zuBUH9MxuhpK9ZAsJyM9NFS6QB_nyemvVEr-j_T-w6oXjO9n4kUPeeofQeAkAwDfFaCPlZ9DYAv12TdMMRdnQsvQcnCHKFw0I50lJ45FELGCpBnr2tLEYi-3fPo-AJfLxZoI9V7KC4QaWr0nnxFO6QLq9XdF6gaSuZqBs8kagtfzMaz-IV03kN2BPigd87GRPu9Mu60IDjWpNcvrnz8MDdUEq7iS-jZj5x00kfZ-1OAVsuy_fgENUGjar6svk732oZr6yZOiL0P3D-YxG_1qYtOLBL0GBcizT6-9BzbNA",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Client1",
+			"item": [
+				{
+					"name": "Restaurants",
+					"item": [
+						{
+							"name": "get all restaurants AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create new restaurant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"McDonnalds\",\n    \"email\": \"oscar.triguero@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update restaurant",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Mc Donnalds 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update restaurant logo",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete restaurant",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Dishes",
+					"item": [
+						{
+							"name": "get all dishes by restaurant AS CLIENT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/restView/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"restView",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create dish",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dishName\": \"happy meal\",\n    \"ingridients\": \"hamburger meal, cheese, onion\",\n    \"price\": 15\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update dish image",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}/attachment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}",
+										"attachment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete dish",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put dish in cart",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/rest/{{restId}}/dish/{{dishId}}?amount=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"rest",
+										"{{restId}}",
+										"dish",
+										"{{dishId}}"
+									],
+									"query": [
+										{
+											"key": "amount",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cart",
+					"item": [
+						{
+							"name": "get all items from cart",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/cart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update cartItem amount x15",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/cart/{{cartId}}?amount=15",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"cart",
+										"{{cartId}}"
+									],
+									"query": [
+										{
+											"key": "amount",
+											"value": "15"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete cart Item",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/cart/{{cartId}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"cart",
+										"{{cartId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "process user cart",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/cart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InB4YUY4MFBjaUp1dmlBMm15S0N1QyJ9.eyJuaWNrbmFtZSI6ImNsaWVudDEiLCJuYW1lIjoiY2xpZW50MUBlYXN5LWVhdC5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvNWMwMDYzNTU0NmNjYTlmMzk1YTU2YWI0NTMxMjY0NzA_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZjbC5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMS0wNy0yOFQxNzo1NDowOS41MDZaIiwiZW1haWwiOiJjbGllbnQxQGVhc3ktZWF0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbWJ1Yjlwc2guZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxMDA1ZTY2NTFiZmJhMDA2OTBjNDcyYiIsImF1ZCI6IndDY2RuR0NhcmFrNzVHOUNNQlQwNGx6U3RFb2V6bFNFIiwiaWF0IjoxNjI3NDk0ODY3LCJleHAiOjE2MjgzNTg4Njd9.UFg5vmSmLTeDMtJBih1dtKGy7KIWZLJCi6CYiq0C9IqcBivipHiR8HILeeaBvBEhwGd1v0qQDvS59iJguTLsvJs4i_dfwA8_j-RttWAn7Q3beXXsNooW748O8WrS2SuJ7C7pAi1yHp8DA5B0D8q3Bo3j6WgP_-Gqp0HXgl_UyMCA6AtxKQDsO_63tGAn7BDp_wmN07vFR-0LcqIF60__dqzhltr3j0lUj4WxtD8ByFUPbFLyCl35Ul1D84ePINQksyi-APNykbiGlmkuty664R2fT1g8GHXQiDp04I_1Ab6YcatDVUylw6tOtJrT6NvgzKE4UpSknL6Hw9dPf1g1dw",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InB4YUY4MFBjaUp1dmlBMm15S0N1QyJ9.eyJuaWNrbmFtZSI6ImEiLCJuYW1lIjoiYUBhLmNvbSIsInBpY3R1cmUiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci9kMTBjYThkMTEzMDFjMmY0OTkzYWMyMjc5Y2U0YjkzMD9zPTQ4MCZyPXBnJmQ9aHR0cHMlM0ElMkYlMkZjZG4uYXV0aDAuY29tJTJGYXZhdGFycyUyRmEucG5nIiwidXBkYXRlZF9hdCI6IjIwMjEtMDctMjZUMTc6Mjc6MDMuNDg5WiIsImVtYWlsIjoiYUBhLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9kZXYtbWJ1Yjlwc2guZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYwZTBkMjIyOWZjMGY0MDA2OTk4ODhjZCIsImF1ZCI6IndDY2RuR0NhcmFrNzVHOUNNQlQwNGx6U3RFb2V6bFNFIiwiaWF0IjoxNjI3NDAzODMxLCJleHAiOjE2Mjc0Mzk4MzF9.Ol2QIu_-Y4oytb-sFJ1ejSgebUa9BIJMxB6xeHzgKJMg2lRjGh_mtl68YvXagrWU3Uk0ewwFplNqT2IAGknU2nMnHA7m8Cg_u2voZ9mGW2GaaRPNbq37AtuN4_Hn27vg5pWMDsl4Qi9LKCUuB1v4USYXj7QryIv3b_RoGD2GOPbiOleoPvlrGdfp2IPLsWP4zPBMORNEhlFPLZ4iSZs0Lnp6B3IRHchX79frVWlNKD-UZWQV2D8ptGSTjyqwwk3YTE-TviOhyHIcI-hij5h4ODUr3MiLk2A1E_Tqb-2QYkGbZW4AyiRzY-lSCq7l0WtjvjoPLsTLJF7nNVNu-e9bJA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
