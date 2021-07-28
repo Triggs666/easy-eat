@@ -100,7 +100,7 @@
   - Cart:
     - Include API calls to test get, add, update and delete dishes
     - Include API calls to process the cart
-* All three users have the same functions to call in order to test access control
+* Client user have all functions ready to call in order to test access control
   - In case the user is not allowed to execute a function, a  “deny access” error is returned (for example if client user tried to delete a restaurant)
 * The frontend of this project has not been developed (yet) so, the web navigation have to be simulated manually. To help this task, some global variables has been defined in Postman
   - restId: Restaurant ID generated when the restaurant is created
