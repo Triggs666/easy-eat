@@ -20,6 +20,7 @@ provider:
     DISH_TABLE: ot-aws-dyndb-dishTable
     CART_TABLE: ot-aws-dyndb-cartTable
     DISH_INDEX_NAME: ot-aws-dyndb-dishIndex
+    DISH_REST_INDEX_NAME: ot-aws-dyndb-dishRestIndex
     IMAGES_S3_BUCKET: ot-aws-s3-bucket-easy-eat-images
     SIGNED_URL_EXPIRATION: 300
 
@@ -77,6 +78,8 @@ functions:
 
   Auth_CLI:
     handler: src/lambda/auth/auth0Authorizer_CLI.handler
+
+
 # ------------------------------------------------------------------------
 # Restaurant functions 
 # ------------------------------------------------------------------------
@@ -220,6 +223,25 @@ functions:
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+  
+  GetAllDishes:
+    handler: src/lambda/http/getAllDishes.handler
+    events:
+      - http:
+          method: get
+          path: restView/{restId}/dish
+          cors: true
+          authorizer: Auth_CLI   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_REST_INDEX_NAME}
+
 
   CreateDish:
     handler: src/lambda/http/createDish.handler
@@ -240,6 +262,10 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
 
   UpdateDish:
     handler: src/lambda/http/updateDish.handler
@@ -288,6 +314,10 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
@@ -446,6 +476,8 @@ resources:
             AttributeType: S
           - AttributeName: dishId
             AttributeType: S
+          - AttributeName: restId
+            AttributeType: S
         KeySchema:
           - AttributeName: keyId
             KeyType: HASH
@@ -457,6 +489,13 @@ resources:
           - IndexName: ${self:provider.environment.DISH_INDEX_NAME}
             KeySchema:
               - AttributeName: dishId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.DISH_REST_INDEX_NAME}
+            KeySchema:
+              - AttributeName: restId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
