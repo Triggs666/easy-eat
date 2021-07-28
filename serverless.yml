@@ -381,7 +381,7 @@ functions:
     events:
       - http:
           method: patch
-          path: cart/{itemId}
+          path: cart/{cartId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -406,7 +406,7 @@ functions:
     events:
       - http:
           method: delete
-          path: cart/{itemId}
+          path: cart/{cartId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
