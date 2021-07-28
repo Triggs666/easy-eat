@@ -111,8 +111,12 @@ export class Dish{
     async putDishInUserCart(userId: string, restId: string, dishId: string, amount: number): Promise<CartItem> {
         
         const dishItem:DishItem = await this.getDishById(dishId);
+
+        //Check restId ...
+        const rests:Restaurant = new Restaurant();
+        const restItem: RestaurantItem = await rests.getRestaurantbyRestId(userId, restId);
         
-        if (dishItem == undefined) return {
+        if (dishItem == undefined || restItem == undefined) return {
             userId: undefined,
             itemId: undefined,
             restId: undefined,
@@ -120,7 +124,9 @@ export class Dish{
             dishName: undefined,
             amount: undefined,
             price: undefined
-          };
+        };
+
+
 
         const cart:Cart = new Cart();
         return await cart.createItemInUserCart (userId, restId, dishId, amount, dishItem.dishName, amount*dishItem.price)

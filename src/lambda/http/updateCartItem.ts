@@ -11,7 +11,7 @@ const logger = createLogger('lambda::UPDATE_CART_ITEM')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
-  const cartId = event.pathParameters.cartId;
+  const itemId = event.pathParameters.itemId;
   const amount = event.queryStringParameters.amount;
 
   var nAmount = 0;
@@ -33,7 +33,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Updating a Item', {newItem});
 
   const cart = new Cart();
-  const savedItem = await cart.updateItemInUserCart(getUserId(event), cartId, newItem);
+  const savedItem = await cart.updateItemInUserCart(getUserId(event), itemId, newItem);
   
   if (savedItem == undefined){
     return returnErrorMsg (500, 'Error updating cart item!');

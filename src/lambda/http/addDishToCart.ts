@@ -35,7 +35,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return returnErrorMsg (500, 'Error adding dish to cart!');
   }
   if (cartItem.itemId == undefined){
-    return returnErrorMsg (400, 'Dish not found!');
+    return returnErrorMsg (400, 'Impossible to add dish to cart. Dish or Restaurant not found!');
   }
 
   return {
