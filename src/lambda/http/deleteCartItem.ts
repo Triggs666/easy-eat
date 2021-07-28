@@ -9,12 +9,12 @@ const logger = createLogger('lambda::DELETE_CART_ITEM')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
-  const cartId = event.pathParameters.cartId
+  const itemId = event.pathParameters.cartId
 
-  logger.info('Deleting the cartItem', cartId)
+  logger.info('Deleting the cartItem', itemId)
 
   const cart = new Cart();
-  const deletedItem = await cart.deleteItemInUserCart(getUserId(event), cartId)
+  const deletedItem = await cart.deleteItemInUserCart(getUserId(event), itemId)
   if (!deletedItem){
     return returnErrorMsg (500, 'Error deleting cart item!');
   } 
