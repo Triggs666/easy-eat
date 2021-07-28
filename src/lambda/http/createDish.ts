@@ -21,6 +21,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return returnErrorMsg (500, 'Error creting new dish!');
   }
 
+  if (item.dishId == undefined){
+    return returnErrorMsg (400, 'Restaurant not found to add the dish!');
+  }
+
   return {
     statusCode: 201,
     headers: {

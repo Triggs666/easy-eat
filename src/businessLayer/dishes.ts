@@ -8,6 +8,8 @@ import { UpdateDishRequest } from '../requests/UpdateDishRequest';
 import { CartItem } from '../models/CartItem';
 import { Cart } from './cart';
 import { StorageAccess } from '../storageLayer/storageAccess';
+import { Restaurant } from './restaurants';
+import { RestaurantItem } from '../models/RestaurantItem';
 
 
 export class Dish{
@@ -48,6 +50,18 @@ export class Dish{
         const dishId = uuid.v4();
         const keyId = dishKey(userId, restId)
 
+        //Check restId ...
+        const rests:Restaurant = new Restaurant();
+        const restItem: RestaurantItem = await rests.getRestaurantbyRestId(userId, restId);
+
+        if (restItem == undefined) return {
+            keyId: undefined,
+            dishId: undefined,
+            restId: undefined,
+            dishName: undefined,
+            price: undefined
+        };
+
         const newRest:DishItem = {
             keyId,
             dishId,
@@ -62,7 +76,7 @@ export class Dish{
     
     }
 
-    updateDishbyUserRestId(userId: string, restId:string, dishId:string ,newItem:UpdateDishRequest):Promise<DishItem> {
+    async updateDishbyUserRestId(userId: string, restId:string, dishId:string ,newItem:UpdateDishRequest):Promise<DishItem> {
 
         const keyId = dishKey(userId, restId)
         const newRest:DishItem = {
@@ -98,7 +112,15 @@ export class Dish{
         
         const dishItem:DishItem = await this.getDishById(dishId);
         
-        if (dishItem == undefined) return undefined;
+        if (dishItem == undefined) return {
+            userId: undefined,
+            itemId: undefined,
+            restId: undefined,
+            dishId: undefined,
+            dishName: undefined,
+            amount: undefined,
+            price: undefined
+          };
 
         const cart:Cart = new Cart();
         return await cart.createItemInUserCart (userId, restId, dishId, amount, dishItem.dishName, amount*dishItem.price)

@@ -17,21 +17,25 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   if (!amount) {
     return returnErrorMsg (300, 'amount value is mandatory');
   }
-  else{
-    try{
-      nAmount = Number(amount);
-    }
-    catch(err){
-      return returnErrorMsg (300, 'amount value should be a number');
-    }
+
+  nAmount = Number(amount);
+  if (Number.isNaN(nAmount)){
+    return returnErrorMsg (300, 'amount value should be a number');
+  }
+  if (nAmount<=0){
+    return returnErrorMsg (300, 'amount value should be greater than 0');
   }
 
   logger.info('Add the dish to the user cart', {restId, dishId, nAmount})
 
   const dish = new Dish();
-  const cartItem = await dish.putDishInUserCart(getUserId(event), restId, dishId,nAmount);
-  if (!cartItem){
+  const cartItem = await dish.putDishInUserCart(getUserId(event), restId, dishId, nAmount);
+  
+  if (cartItem == undefined){
     return returnErrorMsg (500, 'Error adding dish to cart!');
+  }
+  if (cartItem.itemId == undefined){
+    return returnErrorMsg (400, 'Dish not found!');
   }
 
   return {

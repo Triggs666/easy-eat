@@ -22,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return returnErrorMsg (500, 'Error Updating restaurant!');
   } else {
     if (savedItem.name == undefined){
-      return returnErrorMsg (400, 'Nothing to update!');
+      return returnErrorMsg (400, 'Restaurant not found!');
     } 
   }
 
