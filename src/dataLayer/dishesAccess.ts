@@ -13,6 +13,7 @@ export class DishDBAccess{
   private readonly logger:Logger;
   private readonly dishTable = process.env.DISH_TABLE;
   private readonly dishIndex = process.env.DISH_INDEX_NAME;
+  private readonly dishRestIndex = process.env.DISH_REST_INDEX_NAME
 
   constructor(){
       this.docClient = new AWS.DynamoDB.DocumentClient();
@@ -44,6 +45,33 @@ export class DishDBAccess{
       return items as DishItem[];
   
   }
+
+  async getAllDishListbyRestaurant(restId:string):Promise<DishItem[]> {
+
+    this.logger.info('getAllDishListbyRestaurant', {tableName: this.dishTable, restId})
+
+    var items = undefined;
+
+    await this.docClient.query({
+        TableName: this.dishTable,
+        IndexName: this.dishIndex,
+        KeyConditionExpression: 'dishId = :dishId',
+        ExpressionAttributeValues: {
+          ':dishId': dishId
+        },
+        ScanIndexForward: false
+      }).promise()
+      .then((data) => {
+        this.logger.info("get process finished OK", {data})
+        items = data.Items;
+      })
+      .catch((err: AWSError) => {
+        this.logger.error("Create process ERROR:",err)
+      });
+
+    return items as DishItem[];
+
+}
 
   async getDishesById(dishId:string):Promise<DishItem[]> {
 

@@ -32,6 +32,13 @@ export class Dish{
     
     }
 
+    async getAllDishesByRestaturant(restId: string):Promise<DishItem[]> {
+
+        this.logger.info('getDishesByRestaturant', {restId})
+        return this.dbAccess.getAllDishListbyRestaurant(restId);
+    
+    }
+
     async getDishById(dishId: string):Promise<DishItem> {
 
         this.logger.info('getDishesById', {dishId})
