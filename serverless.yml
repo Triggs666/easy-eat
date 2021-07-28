@@ -328,6 +328,10 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}/index/${self:provider.environment.RESTAURANT_INDEX_NAME}
 
   GenerateUploadUrl_DishPhoto:
     handler: src/lambda/http/generateUploadUrl_DishPhoto.handler
