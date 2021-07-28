@@ -1,0 +1,565 @@
+service:
+  name: serverless-easy-eat
+
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
+  - serverless-plugin-tracing
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'eu-west-1'}
+
+  environment:
+    RESTAURANT_TABLE: ot-aws-dyndb-restaurantTable
+    DISH_TABLE: ot-aws-dyndb-dishTable
+    CART_TABLE: ot-aws-dyndb-cartTable
+    RESTAURANT_INDEX_NAME: ot-aws-dyndb-restIndex
+    DISH_INDEX_NAME: ot-aws-dyndb-dishIndex
+    DISH_REST_INDEX_NAME: ot-aws-dyndb-dishRestIndex
+    IMAGES_S3_BUCKET: ot-aws-s3-bucket-easy-eat-images
+    SIGNED_URL_EXPIRATION: 300
+
+  tracing:
+    lambda: true
+    apiGateway: true
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'xray:PutTraceSegments'
+        - 'xray:PutTelemetryRecords'
+      Resource:
+        - '*' 
+
+
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: easy-eat API
+        description: Serverless application to ask food 
+    models:
+      - name: CreateRestaurantRequest
+        contentType: application/json
+        schema: ${file(models/create-restaurant-request.json)}
+      - name: UpdateRestaurantRequest
+        contentType: application/json
+        schema: ${file(models/update-restaurant-request.json)}
+      - name: CreateDishRequest
+        contentType: application/json
+        schema: ${file(models/create-dish-request.json)}
+      - name: UpdateDishRequest
+        contentType: application/json
+        schema: ${file(models/update-dish-request.json)}
+
+
+# #################################################################################################################
+#                                                FUNCTIONS
+# #################################################################################################################
+
+    
+functions:
+
+# ------------------------------------------------------------------------
+# Authoritation functions 
+# ------------------------------------------------------------------------
+
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
+
+  Auth_ADMIN:
+    handler: src/lambda/auth/auth0Authorizer_ADMIN.handler
+
+  Auth_CLI:
+    handler: src/lambda/auth/auth0Authorizer_CLI.handler
+
+
+# ------------------------------------------------------------------------
+# Restaurant functions 
+# ------------------------------------------------------------------------
+
+  GetAllRestaurant:
+    handler: src/lambda/http/getAllRestaurant.handler
+    events:
+      - http:
+          method: get
+          path: restView
+          cors: true
+          authorizer: Auth_CLI   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+
+  GetRestaurant:
+    handler: src/lambda/http/getRestaurant.handler
+    events:
+      - http:
+          method: get
+          path: rest
+          cors: true
+          authorizer: Auth   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+
+  CreateRestaurant:
+    handler: src/lambda/http/createRestaurant.handler
+    events:
+      - http:
+          method: post
+          path: rest
+          cors: true
+          authorizer: Auth_ADMIN
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new restaurant
+            description: Create a new restaurant
+            requestModels:
+              'application/json': CreateRestaurantRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - SNS:CreateTopic
+          - SNS:Subscribe
+        Resource: arn:aws:sns:${self:provider.region}:*:*
+
+  UpdateRestaurant:
+    handler: src/lambda/http/updateRestaurant.handler
+    events:
+      - http:
+          method: patch
+          path: rest/{restId}
+          cors: true
+          authorizer: Auth_ADMIN
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update restaurant data
+            description: Update restaurant data
+            requestModels:
+              'application/json': UpdateRestaurantRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+
+  DeleteRestaurant:
+    handler: src/lambda/http/deleteRestaurant.handler
+    events:
+      - http:
+          method: delete
+          path: rest/{restId}
+          cors: true
+          authorizer: Auth_ADMIN
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - SNS:ListSubscriptionsByTopic
+          - SNS:Unsubscribe
+          - SNS:DeleteTopic
+        Resource: arn:aws:sns:${self:provider.region}:*:*
+
+  GenerateUploadUrl_RestLogo:
+    handler: src/lambda/http/generateUploadUrl_RestLogo.handler
+    events:
+      - http:
+          method: post
+          path: rest/{restId}/attachment
+          cors: true
+          authorizer: Auth_ADMIN
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+
+
+# ------------------------------------------------------------------------
+# Dishes functions 
+# ------------------------------------------------------------------------
+
+  GetDishes:
+    handler: src/lambda/http/getDishes.handler
+    events:
+      - http:
+          method: get
+          path: rest/{restId}/dish
+          cors: true
+          authorizer: Auth   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+  
+  GetAllDishes:
+    handler: src/lambda/http/getAllDishes.handler
+    events:
+      - http:
+          method: get
+          path: restView/{restId}/dish
+          cors: true
+          authorizer: Auth_CLI   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_REST_INDEX_NAME}
+
+
+  CreateDish:
+    handler: src/lambda/http/createDish.handler
+    events:
+      - http:
+          method: post
+          path: rest/{restId}/dish
+          cors: true
+          authorizer: Auth_ADMIN
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new dish for a restaurant
+            description: Create a new dish for a restaurant
+            requestModels:
+              'application/json': CreateDishRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+
+  UpdateDish:
+    handler: src/lambda/http/updateDish.handler
+    events:
+      - http:
+          method: patch
+          path: rest/{restId}/dish/{dishId}
+          cors: true
+          authorizer: Auth_ADMIN
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update dish information
+            description: Update dish information
+            requestModels:
+              'application/json': UpdateDishRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+
+  DeleteDish:
+    handler: src/lambda/http/deleteDish.handler
+    events:
+      - http:
+          method: delete
+          path: rest/{restId}/dish/{dishId}
+          cors: true
+          authorizer: Auth_ADMIN
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+
+  AddDishToCart:
+    handler: src/lambda/http/addDishToCart.handler
+    events:
+      - http:
+          method: put
+          path: rest/{restId}/dish/{dishId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}/index/${self:provider.environment.RESTAURANT_INDEX_NAME}
+
+  GenerateUploadUrl_DishPhoto:
+    handler: src/lambda/http/generateUploadUrl_DishPhoto.handler
+    events:
+      - http:
+          method: post
+          path: rest/{restId}/dish/{dishId}/attachment
+          cors: true
+          authorizer: Auth_ADMIN
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+
+# ------------------------------------------------------------------------
+# Cart functions 
+# ------------------------------------------------------------------------
+
+  GetCartItems:
+    handler: src/lambda/http/getCartItems.handler
+    events:
+      - http:
+          method: get
+          path: cart
+          cors: true
+          authorizer: Auth   
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+
+  UpdateCartItem:
+    handler: src/lambda/http/updateCartItem.handler
+    events:
+      - http:
+          method: patch
+          path: cart/{cartId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+      - Effect: Allow        
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DISH_TABLE}/index/${self:provider.environment.DISH_INDEX_NAME}
+
+  DeleteCartItem:
+    handler: src/lambda/http/deleteCartItem.handler
+    events:
+      - http:
+          method: delete
+          path: cart/{cartId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+
+  ProcessCartItems:
+    handler: src/lambda/http/processCartItems.handler
+    events:
+      - http:
+          method: post
+          path: cart
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CART_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RESTAURANT_TABLE}/index/${self:provider.environment.RESTAURANT_INDEX_NAME}
+      - Effect: Allow
+        Action:
+          - SNS:Publish
+        Resource: arn:aws:sns:${self:provider.region}:*:*
+
+
+
+# #################################################################################################################
+#                                                RESOURCES
+# #################################################################################################################
+
+resources:
+  Resources:
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
+
+    RestaurantDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: restId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: restId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.RESTAURANT_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.RESTAURANT_INDEX_NAME}
+            KeySchema:
+              - AttributeName: restId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    DishDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: keyId
+            AttributeType: S
+          - AttributeName: dishId
+            AttributeType: S
+          - AttributeName: restId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: keyId
+            KeyType: HASH
+          - AttributeName: dishId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DISH_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.DISH_INDEX_NAME}
+            KeySchema:
+              - AttributeName: dishId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ${self:provider.environment.DISH_REST_INDEX_NAME}
+            KeySchema:
+              - AttributeName: restId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    CartDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: itemId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: itemId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CART_TABLE}
+
+    AttachmentsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.IMAGES_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: MyPolicy
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
+        Bucket: !Ref AttachmentsBucket

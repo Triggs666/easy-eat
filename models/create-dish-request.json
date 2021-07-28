@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "create-dish",
+  "type": "object",
+  "properties": {
+    "dishName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ingridients": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "dishName",
+    "price"
+  ],
+  "additionalProperties": false
+}
